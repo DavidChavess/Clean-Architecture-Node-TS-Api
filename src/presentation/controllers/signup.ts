@@ -1,5 +1,7 @@
+import { httpRequest, httpResponse } from '../protocols/https'
+
 export class SignUpController {
-  handle (httpRequest: any): any {
+  handle (httpRequest: httpRequest): httpResponse {
     const body = new Error('')
 
     if (!httpRequest.body.name) {
