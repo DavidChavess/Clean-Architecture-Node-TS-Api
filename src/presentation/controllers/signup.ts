@@ -4,8 +4,8 @@ import { httpRequest, httpResponse } from '../protocols/https'
 
 export class SignUpController {
   handle (httpRequest: httpRequest): httpResponse {
-    const fields = ['name', 'email']
-    return fields
+    const requiredFields = ['name', 'email', 'password']
+    return requiredFields
       .filter(field => !httpRequest.body[field])
       .map(field => badRequest(new MissingParamError(field)))[0]
   }
