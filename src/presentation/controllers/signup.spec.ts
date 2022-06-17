@@ -1,11 +1,21 @@
 import { SignUpController } from './signup'
-import { MissingParamError } from '../errors/missing-param'
 import { EmailValidator } from '../protocols/email-validator'
 import { InvalidParamError } from '../errors/invalid-param'
+import { MissingParamError } from '../errors/missing-param'
+import { InternalServerError } from '../errors/server'
 
 class EmailValidatorStub implements EmailValidator {
+  private shouldError: boolean = false
+
   isValid (email: string): boolean {
+    if (this.shouldError) {
+      throw new InternalServerError()
+    }
     return true
+  }
+
+  shouldException (): void {
+    this.shouldError = true
   }
 }
 
@@ -97,5 +107,21 @@ describe('Signup Controller', () => {
     const isValidSpy = jest.spyOn(_emailValidatorStub, 'isValid')
     _sut.handle(httpRequest)
     expect(isValidSpy).toHaveBeenCalledWith('any_email@gmail.com')
+  })
+
+  test('Should return 500 if EmailValidator thorws', () => {
+    const httpRequest = {
+      body: {
+        name: 'David Chaves Ferreira',
+        email: 'any_email@gmail.com',
+        password: 'any_pass',
+        passwordConfirmation: 'any_pass'
+      }
+    }
+    const emailValidator = _emailValidatorStub as EmailValidatorStub
+    emailValidator.shouldException()
+    const httpResponse = _sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new InternalServerError())
   })
 })
