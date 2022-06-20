@@ -22,12 +22,12 @@ class AddAccountStub implements AddAccount {
 describe('Signup Controller', () => {
   let _sut: SignUpController
   let _emailValidatorStub: EmailValidator
-  let _addAccount: AddAccount
+  let _addAccountStub: AddAccount
 
   beforeEach(() => {
     _emailValidatorStub = new EmailValidatorStub()
-    _addAccount = new AddAccountStub()
-    _sut = new SignUpController(_emailValidatorStub, _addAccount)
+    _addAccountStub = new AddAccountStub()
+    _sut = new SignUpController(_emailValidatorStub, _addAccountStub)
   })
 
   test('Should return 400 if no name is provided', () => {
@@ -151,7 +151,7 @@ describe('Signup Controller', () => {
         passwordConfirmation: 'any_pass'
       }
     }
-    const addSpy = jest.spyOn(_addAccount, 'add')
+    const addSpy = jest.spyOn(_addAccountStub, 'add')
     const httpResponse = _sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
     expect(addSpy).toHaveBeenCalledWith({
@@ -159,5 +159,22 @@ describe('Signup Controller', () => {
       email: 'davi.ch.fe@gmail.com',
       password: 'any_pass'
     })
+  })
+
+  test('Should return 500 if AddAccount thorws', () => {
+    jest.spyOn(_addAccountStub, 'add').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    const httpRequest = {
+      body: {
+        name: 'David Chaves Ferreira',
+        email: 'any_email@gmail.com',
+        password: 'any_pass',
+        passwordConfirmation: 'any_pass'
+      }
+    }
+    const httpResponse = _sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(500)
+    expect(httpResponse.body).toEqual(new InternalServerError())
   })
 })
