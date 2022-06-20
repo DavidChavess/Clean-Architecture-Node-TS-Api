@@ -1,6 +1,8 @@
 import { SignUpController } from './signup'
-import { EmailValidator, HttpRequest, AddAccount } from '../protocols'
+import { EmailValidator } from '../protocols'
 import { InvalidParamError, MissingParamError, InternalServerError } from '../errors'
+import { AddAccount, AddAccountModel } from '../../domain/usecases/add-account'
+import { AccountModel } from '../../domain/models/account-model'
 
 class EmailValidatorStub implements EmailValidator {
   isValid (email: string): boolean {
@@ -9,8 +11,13 @@ class EmailValidatorStub implements EmailValidator {
 }
 
 class AddAccountStub implements AddAccount {
-  add (httpRequest: HttpRequest): void {
-    console.log('created')
+  add (httpRequest: AddAccountModel): AccountModel {
+    return {
+      id: 'valid id',
+      name: 'valid name',
+      email: 'valid email',
+      password: 'valid password'
+    }
   }
 }
 
@@ -149,6 +156,10 @@ describe('Signup Controller', () => {
     const addSpy = jest.spyOn(_addAccount, 'add')
     const httpResponse = _sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(200)
-    expect(addSpy).toHaveBeenCalledWith(httpRequest)
+    expect(addSpy).toHaveBeenCalledWith({
+      name: 'David Chaves Ferreira',
+      email: 'davi.ch.fe@gmail.com',
+      password: 'any_pass'
+    })
   })
 })
