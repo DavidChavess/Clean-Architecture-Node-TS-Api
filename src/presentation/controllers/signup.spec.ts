@@ -188,13 +188,14 @@ describe('Signup Controller', () => {
         passwordConfirmation: 'valid password'
       }
     }
-    const httpResponse = await _sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(200)
-    expect(httpResponse.body).toEqual({
+    const account: AccountModel = {
       id: 'valid id',
       name: 'valid name',
       email: 'valid email',
       password: 'valid password'
-    })
+    }
+    const httpResponse = await _sut.handle(httpRequest)
+    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.body).toEqual(account)
   })
 })
