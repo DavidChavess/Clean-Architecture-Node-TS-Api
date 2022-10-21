@@ -15,11 +15,11 @@ export class SignUpController implements Controller {
     try {
       const invalidField = ['name', 'email', 'password', 'passwordConfirmation']
         .find(field => !httpRequest.body[field])
-    
+
       if (invalidField) {
-        return badRequest(new MissingParamError(invalidField))    
+        return badRequest(new MissingParamError(invalidField))
       }
-      
+
       const { name, password, passwordConfirmation, email } = httpRequest.body
       if (passwordConfirmation !== password) {
         return badRequest(new InvalidParamError('passwordConfirmation'))
@@ -31,7 +31,6 @@ export class SignUpController implements Controller {
       }
       const account = await this.addAccount.add({ name, email, password })
       return ok(account)
-      
     } catch (error) {
       console.error(error)
       return serverError()
