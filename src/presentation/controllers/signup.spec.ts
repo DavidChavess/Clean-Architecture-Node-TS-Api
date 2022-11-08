@@ -154,7 +154,7 @@ describe('Signup Controller', () => {
     }
     const addSpy = jest.spyOn(_addAccountStub, 'add')
     const httpResponse = await _sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.statusCode).toBe(201)
     expect(addSpy).toHaveBeenCalledWith({
       name: 'David Chaves Ferreira',
       email: 'davi.ch.fe@gmail.com',
@@ -179,7 +179,7 @@ describe('Signup Controller', () => {
     expect(httpResponse.body).toEqual(new InternalServerError())
   })
 
-  test('Should return 200 if valid data is provided', async () => {
+  test('Should return 201 if valid data is provided', async () => {
     const httpRequest = {
       body: {
         name: 'valid name',
@@ -195,7 +195,7 @@ describe('Signup Controller', () => {
       password: 'valid password'
     }
     const httpResponse = await _sut.handle(httpRequest)
-    expect(httpResponse.statusCode).toBe(200)
+    expect(httpResponse.statusCode).toBe(201)
     expect(httpResponse.body).toEqual(account)
   })
 })
