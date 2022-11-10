@@ -3,10 +3,25 @@ import { LogControllerDecorator } from './log'
 
 class ControllerStub implements Controller {
   async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
-    return {
-      statusCode: 201,
-      body: { name: 'David' }
+    return makeHttpResponse()
+  }
+}
+
+const makeHttpRequest = (): HttpRequest => {
+  return {
+    body: {
+      name: 'David',
+      email: 'any_email@mail.com',
+      password: '123',
+      passwordConfirmation: '123'
     }
+  }
+}
+
+const makeHttpResponse = (): HttpResponse => {
+  return {
+    statusCode: 201,
+    body: { name: 'David' }
   }
 }
 
@@ -21,15 +36,12 @@ describe('LogController Decorator', () => {
 
   test('Should call controller handle', async () => {
     const spyControllerStub = jest.spyOn(_controllerStub, 'handle')
-    const httpRequest: HttpRequest = {
-      body: {
-        name: 'David',
-        email: 'any_email@mail.com',
-        password: '123',
-        passwordConfirmation: '123'
-      }
-    }
-    await _sut.handle(httpRequest)
-    expect(spyControllerStub).toHaveBeenCalledWith(httpRequest)
+    await _sut.handle(makeHttpRequest())
+    expect(spyControllerStub).toHaveBeenCalledWith(makeHttpRequest())
+  })
+
+  test('Should return the same result of the controller', async () => {
+    const httpResponse = await _sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(makeHttpResponse())
   })
 })
