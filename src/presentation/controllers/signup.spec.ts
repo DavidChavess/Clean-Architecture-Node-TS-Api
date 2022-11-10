@@ -126,7 +126,7 @@ describe('Signup Controller', () => {
     }
     const httpResponse = await _sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new InternalServerError())
+    expect(httpResponse.body).toEqual(new InternalServerError(''))
   })
 
   test('Should return 400 if passwordConfirmation fails', async () => {
@@ -176,7 +176,7 @@ describe('Signup Controller', () => {
     }
     const httpResponse = await _sut.handle(httpRequest)
     expect(httpResponse.statusCode).toBe(500)
-    expect(httpResponse.body).toEqual(new InternalServerError())
+    expect(httpResponse.body).toEqual(new InternalServerError(''))
   })
 
   test('Should return 201 if valid data is provided', async () => {
