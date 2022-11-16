@@ -1,6 +1,6 @@
 import { Authentication } from '../../domain/usecases/authentication'
 import { InvalidParamError, MissingParamError } from '../errors'
-import { badRequest, serverError } from '../helpers/http-helper'
+import { badRequest, serverError, unauthorized } from '../helpers/http-helper'
 import { HttpRequest } from '../protocols'
 import { EmailValidator } from '../protocols/email-validator'
 import { LoginController } from './login'
@@ -79,5 +79,11 @@ describe('Login Controller', () => {
     const spyAuthentication = jest.spyOn(_authenticationStub, 'auth')
     await _sut.handle(makeHttpRequest())
     expect(spyAuthentication).toHaveBeenCalledWith('any_email', 'any_pass')
+  })
+
+  test('Should call authentication with correct values', async () => {
+    jest.spyOn(_authenticationStub, 'auth').mockResolvedValueOnce('')
+    const httpResponse = await _sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
