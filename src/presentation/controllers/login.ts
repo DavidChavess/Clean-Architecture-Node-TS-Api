@@ -1,4 +1,4 @@
-import { InvalidParamError, MissingParamError } from '../errors'
+import { InvalidParamError } from '../errors'
 import { badRequest, serverError, unauthorized, ok } from '../helpers/http-helper'
 import { Controller, HttpRequest, HttpResponse, EmailValidator, Authentication, Validation } from './login/login-protocols'
 
@@ -20,10 +20,6 @@ export class LoginController implements Controller {
         return badRequest(error)
       }
       const { email, password } = httpRequest.body
-      const invalidField = ['email', 'password'].find(field => !httpRequest.body[field])
-      if (invalidField) {
-        return badRequest(new MissingParamError(invalidField))
-      }
       if (!this.emailValidator.isValid(email)) {
         return badRequest(new InvalidParamError('email'))
       }

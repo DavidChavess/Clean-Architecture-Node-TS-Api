@@ -41,26 +41,6 @@ describe('Login Controller', () => {
     }
   })
 
-  test('Should return 400 if no email is provided', async () => {
-    const httpRequest: HttpRequest = {
-      body: {
-        password: 'any_pass'
-      }
-    }
-    const HttpResponse = await _sut.handle(httpRequest)
-    expect(HttpResponse).toEqual(badRequest(new MissingParamError('email')))
-  })
-
-  test('Should return 400 if no password is provided', async () => {
-    const httpRequest: HttpRequest = {
-      body: {
-        email: 'any_email'
-      }
-    }
-    const HttpResponse = await _sut.handle(httpRequest)
-    expect(HttpResponse).toEqual(badRequest(new MissingParamError('password')))
-  })
-
   test('Should call emailValidator with correct value', async () => {
     const spyEmailValidator = jest.spyOn(_emailValidatorStub, 'isValid')
     await _sut.handle(makeHttpRequest())
