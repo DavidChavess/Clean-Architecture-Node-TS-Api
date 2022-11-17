@@ -1,6 +1,6 @@
 import { InvalidParamError, MissingParamError } from '../errors'
 import { badRequest, serverError, unauthorized, ok } from '../helpers/http-helper'
-import { HttpRequest, EmailValidator, Authentication } from './login/login-protocols'
+import { HttpRequest, EmailValidator, Authentication, Validation } from './login/login-protocols'
 import { LoginController } from './login'
 
 class EmailValidatorStub implements EmailValidator {
@@ -15,15 +15,23 @@ class AuthenticationStub implements Authentication {
   }
 }
 
+class ValidationStub implements Validation {
+  validate (input: string): Error {
+    return null as unknown as Error
+  }
+}
+
 describe('Login Controller', () => {
   let _sut: LoginController
   let _emailValidatorStub: EmailValidatorStub
   let _authenticationStub: AuthenticationStub
+  let _validationStub: Validation
 
   beforeEach(() => {
     _emailValidatorStub = new EmailValidatorStub()
     _authenticationStub = new AuthenticationStub()
-    _sut = new LoginController(_emailValidatorStub, _authenticationStub)
+    _validationStub = new ValidationStub()
+    _sut = new LoginController(_emailValidatorStub, _authenticationStub, _validationStub)
   })
 
   const makeHttpRequest = (): HttpRequest => ({
@@ -89,6 +97,12 @@ describe('Login Controller', () => {
     jest.spyOn(_authenticationStub, 'auth').mockRejectedValueOnce(new Error('any_error'))
     const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(serverError(new Error('any_error')))
+  })
+
+  test('Should call validation with correct value', async () => {
+    const spyValidation = jest.spyOn(_validationStub, 'validate')
+    await _sut.handle(makeHttpRequest())
+    expect(spyValidation).toHaveBeenCalledWith(makeHttpRequest().body)
   })
 
   test('Should return 200 if valid credentials are provided', async () => {
