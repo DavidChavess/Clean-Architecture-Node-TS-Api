@@ -79,9 +79,15 @@ describe('Login Controller', () => {
     expect(spyAuthentication).toHaveBeenCalledWith('any_email', 'any_pass')
   })
 
-  test('Should call authentication with correct values', async () => {
+  test('Should return 401 if invalid credentials are provided', async () => {
     jest.spyOn(_authenticationStub, 'auth').mockResolvedValueOnce('')
     const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(unauthorized())
+  })
+
+  test('Should return 500 if Authentication throws', async () => {
+    jest.spyOn(_authenticationStub, 'auth').mockRejectedValueOnce(new Error('any_error'))
+    const httpResponse = await _sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(serverError(new Error('any_error')))
   })
 })
