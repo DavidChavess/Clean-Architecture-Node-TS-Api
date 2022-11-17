@@ -105,6 +105,12 @@ describe('Login Controller', () => {
     expect(spyValidation).toHaveBeenCalledWith(makeHttpRequest().body)
   })
 
+  test('Should return 400 if validation returns an erro', async () => {
+    jest.spyOn(_validationStub, 'validate').mockReturnValueOnce(new MissingParamError('any_field'))
+    const httpResponse = await _sut.handle(makeHttpRequest())
+    expect(httpResponse).toEqual(badRequest(new MissingParamError('any_field')))
+  })
+
   test('Should return 200 if valid credentials are provided', async () => {
     const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
