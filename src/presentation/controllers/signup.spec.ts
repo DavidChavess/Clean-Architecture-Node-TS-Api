@@ -1,6 +1,6 @@
 import { SignUpController } from './signup'
 import { InvalidParamError, MissingParamError } from '../errors'
-import { AddAccount, AddAccountModel, EmailValidator, AccountModel, HttpRequest } from './signup/signup-protocols'
+import { AddAccount, AddAccountModel, EmailValidator, AccountModel, HttpRequest, Validation } from './signup/signup-protocols'
 import { badRequest, created, serverError } from '../helpers/http-helper'
 
 class EmailValidatorStub implements EmailValidator {
@@ -12,6 +12,12 @@ class EmailValidatorStub implements EmailValidator {
 class AddAccountStub implements AddAccount {
   async add (account: AddAccountModel): Promise<AccountModel> {
     return makeFakeAccount()
+  }
+}
+
+class ValidationStub implements Validation {
+  validate (input: string): Error | null {
+    return null
   }
 }
 
@@ -35,11 +41,13 @@ describe('Signup Controller', () => {
   let _sut: SignUpController
   let _emailValidatorStub: EmailValidator
   let _addAccountStub: AddAccount
+  let _validationStub: Validation
 
   beforeEach(() => {
     _emailValidatorStub = new EmailValidatorStub()
     _addAccountStub = new AddAccountStub()
-    _sut = new SignUpController(_emailValidatorStub, _addAccountStub)
+    _validationStub = new ValidationStub()
+    _sut = new SignUpController(_emailValidatorStub, _addAccountStub, _validationStub)
   })
 
   test('Should return 400 if no name is provided', async () => {
@@ -138,6 +146,12 @@ describe('Signup Controller', () => {
     jest.spyOn(_addAccountStub, 'add').mockRejectedValueOnce(new Error())
     const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(serverError(new Error()))
+  })
+
+  test('Should call validation with correct value', async () => {
+    const spyValidation = jest.spyOn(_validationStub, 'validate')
+    await _sut.handle(makeHttpRequest())
+    expect(spyValidation).toHaveBeenCalledWith(makeHttpRequest().body)
   })
 
   test('Should return 201 if valid data is provided', async () => {
