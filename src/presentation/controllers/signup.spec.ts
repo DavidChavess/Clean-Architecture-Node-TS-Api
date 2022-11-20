@@ -70,19 +70,6 @@ describe('Signup Controller', () => {
     expect(httpResponse).toEqual(serverError(new Error()))
   })
 
-  test('Should return 400 if passwordConfirmation fails', async () => {
-    const httpRequest = {
-      body: {
-        name: 'David Chaves Ferreira',
-        email: 'invalid-email@gmail.com',
-        password: 'any_pass',
-        passwordConfirmation: 'invalid_pass'
-      }
-    }
-    const httpResponse = await _sut.handle(httpRequest)
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('passwordConfirmation')))
-  })
-
   test('Should call AddAcoount with correct values', async () => {
     const addSpy = jest.spyOn(_addAccountStub, 'add')
     const httpResponse = await _sut.handle(makeHttpRequest())
