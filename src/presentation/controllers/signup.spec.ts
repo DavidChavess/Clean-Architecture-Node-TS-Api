@@ -1,13 +1,7 @@
 import { SignUpController } from './signup'
-import { InvalidParamError, MissingParamError } from '../errors'
-import { AddAccount, AddAccountModel, EmailValidator, AccountModel, HttpRequest, Validation } from './signup/signup-protocols'
+import { MissingParamError } from '../errors'
+import { AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation } from './signup/signup-protocols'
 import { badRequest, created, serverError } from '../helpers/http-helper'
-
-class EmailValidatorStub implements EmailValidator {
-  isValid (email: string): boolean {
-    return true
-  }
-}
 
 class AddAccountStub implements AddAccount {
   async add (account: AddAccountModel): Promise<AccountModel> {
@@ -39,35 +33,13 @@ const makeFakeAccount = (): AccountModel => ({
 
 describe('Signup Controller', () => {
   let _sut: SignUpController
-  let _emailValidatorStub: EmailValidator
   let _addAccountStub: AddAccount
   let _validationStub: Validation
 
   beforeEach(() => {
-    _emailValidatorStub = new EmailValidatorStub()
     _addAccountStub = new AddAccountStub()
     _validationStub = new ValidationStub()
-    _sut = new SignUpController(_emailValidatorStub, _addAccountStub, _validationStub)
-  })
-
-  test('Should return 400 if an invalid email is provided', async () => {
-    jest.spyOn(_emailValidatorStub, 'isValid').mockReturnValueOnce(false)
-    const httpResponse = await _sut.handle(makeHttpRequest())
-    expect(httpResponse).toEqual(badRequest(new InvalidParamError('email')))
-  })
-
-  test('Should call EmailValidator with correct email', async () => {
-    const isValidSpy = jest.spyOn(_emailValidatorStub, 'isValid')
-    await _sut.handle(makeHttpRequest())
-    expect(isValidSpy).toHaveBeenCalledWith('any_email@gmail.com')
-  })
-
-  test('Should return 500 if EmailValidator thorws', async () => {
-    jest.spyOn(_emailValidatorStub, 'isValid').mockImplementationOnce(() => {
-      throw new Error()
-    })
-    const httpResponse = await _sut.handle(makeHttpRequest())
-    expect(httpResponse).toEqual(serverError(new Error()))
+    _sut = new SignUpController(_addAccountStub, _validationStub)
   })
 
   test('Should call AddAcoount with correct values', async () => {
