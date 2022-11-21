@@ -27,4 +27,8 @@ describe('Validation Composite', () => {
     jest.spyOn(_validationStubs[1], 'validate').mockReturnValueOnce(new MissingParamError('name'))
     expect(_sut.validate({ email: 'any_email' })).toEqual(new Error())
   })
+
+  test('Should not return if validation succeeds', () => {
+    expect(_sut.validate({ email: 'any_email' })).toBeFalsy()
+  })
 })
