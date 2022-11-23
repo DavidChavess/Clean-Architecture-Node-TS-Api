@@ -8,8 +8,11 @@ export class DbAuthentication implements Authentication {
     this.loadAccountByEmailRepository = loadAccountByEmailRepository
   }
 
-  async auth (authenticationModel: AuthenticationModel): Promise<string> {
-    await this.loadAccountByEmailRepository.load(authenticationModel.email)
+  async auth (authenticationModel: AuthenticationModel): Promise<string | null> {
+    const email = await this.loadAccountByEmailRepository.load(authenticationModel.email)
+    if (!email) {
+      return null
+    }
     return 'token'
   }
 }

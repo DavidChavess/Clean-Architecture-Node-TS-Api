@@ -3,7 +3,7 @@ import { AccountModel } from '../../../domain/models/account-model'
 import { DbAuthentication } from './db-authentication'
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-  async load (email: string): Promise<AccountModel> {
+  async load (email: string): Promise<AccountModel | null> {
     return {
       id: 'any_id',
       email: 'any_email@mail.com',
@@ -32,5 +32,11 @@ describe('DbAuthentication', () => {
     jest.spyOn(_loadAccountByEmailRepositoryStub, 'load').mockRejectedValueOnce(new Error())
     const promise = _sut.auth({ email: 'any_email@mail.com', password: 'any_pass' })
     await expect(promise).rejects.toThrow()
+  })
+
+  test('Should return null if loadAccountByEmailRepository return null', async () => {
+    jest.spyOn(_loadAccountByEmailRepositoryStub, 'load').mockResolvedValueOnce(null)
+    const response = await _sut.auth({ email: 'any_email@mail.com', password: 'any_pass' })
+    expect(response).toBeNull()
   })
 })
