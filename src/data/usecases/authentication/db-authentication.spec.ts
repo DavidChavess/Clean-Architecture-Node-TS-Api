@@ -83,4 +83,9 @@ describe('DbAuthentication', () => {
     await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
       .rejects.toThrow()
   })
+
+  test('Should return a token on success', async () => {
+    const response = await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
+    expect(response).toBe('any_token')
+  })
 })
