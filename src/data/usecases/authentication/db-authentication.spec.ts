@@ -2,6 +2,7 @@ import { LoadAccountByEmailRepository } from '../../protocols/db/load-account-by
 import { AccountModel } from '../../../domain/models/account-model'
 import { DbAuthentication } from './db-authentication'
 import { HashComparer } from '../../protocols/criptography/hash-comparer'
+import { TokenGenerator } from '../../protocols/criptography/token-generator'
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   async load (email: string): Promise<AccountModel | null> {
@@ -20,15 +21,23 @@ class HashComparerStub implements HashComparer {
   }
 }
 
+class TokenGeneratorStub implements TokenGenerator {
+  async generate (id: string): Promise<string> {
+    return 'any_token'
+  }
+}
+
 describe('DbAuthentication', () => {
   let _sut: DbAuthentication
   let _hashComparerStub: HashComparerStub
   let _loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub
+  let _tokenGeneratorStub: TokenGeneratorStub
 
   beforeEach(() => {
     _loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
     _hashComparerStub = new HashComparerStub()
-    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub)
+    _tokenGeneratorStub = new TokenGeneratorStub()
+    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _tokenGeneratorStub)
   })
 
   test('Should call loadAccountByEmailRepository with correct email', async () => {
@@ -59,5 +68,11 @@ describe('DbAuthentication', () => {
     jest.spyOn(_hashComparerStub, 'compare').mockResolvedValueOnce(false)
     const response = await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
     expect(response).toBeNull()
+  })
+
+  test('Should call TokenGenerator with correct values', async () => {
+    const tokenGenerateSpy = jest.spyOn(_tokenGeneratorStub, 'generate')
+    await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
+    expect(tokenGenerateSpy).toHaveBeenCalledWith('any_id')
   })
 })
