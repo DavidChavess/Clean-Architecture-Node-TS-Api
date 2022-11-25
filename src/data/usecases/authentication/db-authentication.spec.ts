@@ -75,4 +75,12 @@ describe('DbAuthentication', () => {
     await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
     expect(tokenGenerateSpy).toHaveBeenCalledWith('any_id')
   })
+
+  test('Should throw if tokenGeneratorStub throws', async () => {
+    jest.spyOn(_tokenGeneratorStub, 'generate').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
+      .rejects.toThrow()
+  })
 })
