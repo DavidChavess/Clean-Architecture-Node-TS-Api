@@ -3,6 +3,7 @@ import { AccountModel } from '../../../domain/models/account-model'
 import { DbAuthentication } from './db-authentication'
 import { HashComparer } from '../../protocols/criptography/hash-comparer'
 import { TokenGenerator } from '../../protocols/criptography/token-generator'
+import { UpdateAccessTokenRepository } from '../../protocols/db/update-access-token-repository'
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
   async load (email: string): Promise<AccountModel | null> {
@@ -27,17 +28,24 @@ class TokenGeneratorStub implements TokenGenerator {
   }
 }
 
+class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
+  async update (id: string, token: string): Promise<void> {
+  }
+}
+
 describe('DbAuthentication', () => {
   let _sut: DbAuthentication
   let _hashComparerStub: HashComparerStub
   let _loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub
   let _tokenGeneratorStub: TokenGeneratorStub
+  let _updateAccessTokenStub: UpdateAccessTokenRepositoryStub
 
   beforeEach(() => {
     _loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
     _hashComparerStub = new HashComparerStub()
     _tokenGeneratorStub = new TokenGeneratorStub()
-    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _tokenGeneratorStub)
+    _updateAccessTokenStub = new UpdateAccessTokenRepositoryStub()
+    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _tokenGeneratorStub, _updateAccessTokenStub)
   })
 
   test('Should call loadAccountByEmailRepository with correct email', async () => {
@@ -87,5 +95,11 @@ describe('DbAuthentication', () => {
   test('Should return a token on success', async () => {
     const response = await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
     expect(response).toBe('any_token')
+  })
+
+  test('Should call UpdateAcessTokenRepository with correct values', async () => {
+    const updateAccessTokenSpy = jest.spyOn(_updateAccessTokenStub, 'update')
+    await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
+    expect(updateAccessTokenSpy).toHaveBeenCalledWith('any_id', 'any_token')
   })
 })
