@@ -3,7 +3,7 @@ import {
   AccountModel,
   LoadAccountByEmailRepository,
   HashComparer,
-  TokenGenerator,
+  Encrypter,
   UpdateAccessTokenRepository
 } from './db-authentication-protocols'
 
@@ -24,8 +24,8 @@ class HashComparerStub implements HashComparer {
   }
 }
 
-class TokenGeneratorStub implements TokenGenerator {
-  async generate (id: string): Promise<string> {
+class EncrypterStub implements Encrypter {
+  async encrypt (value: string): Promise<string> {
     return 'any_token'
   }
 }
@@ -39,15 +39,15 @@ describe('DbAuthentication', () => {
   let _sut: DbAuthentication
   let _hashComparerStub: HashComparerStub
   let _loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub
-  let _tokenGeneratorStub: TokenGeneratorStub
+  let _encrypterStub: EncrypterStub
   let _updateAccessTokenStub: UpdateAccessTokenRepositoryStub
 
   beforeEach(() => {
     _loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
     _hashComparerStub = new HashComparerStub()
-    _tokenGeneratorStub = new TokenGeneratorStub()
+    _encrypterStub = new EncrypterStub()
     _updateAccessTokenStub = new UpdateAccessTokenRepositoryStub()
-    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _tokenGeneratorStub, _updateAccessTokenStub)
+    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _encrypterStub, _updateAccessTokenStub)
   })
 
   test('Should call loadAccountByEmailRepository with correct email', async () => {
@@ -80,14 +80,14 @@ describe('DbAuthentication', () => {
     expect(response).toBeNull()
   })
 
-  test('Should call TokenGenerator with correct values', async () => {
-    const tokenGenerateSpy = jest.spyOn(_tokenGeneratorStub, 'generate')
+  test('Should call Encrypter with correct values', async () => {
+    const encrypterSpy = jest.spyOn(_encrypterStub, 'encrypt')
     await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
-    expect(tokenGenerateSpy).toHaveBeenCalledWith('any_id')
+    expect(encrypterSpy).toHaveBeenCalledWith('any_id')
   })
 
-  test('Should throw if tokenGeneratorStub throws', async () => {
-    jest.spyOn(_tokenGeneratorStub, 'generate').mockImplementationOnce(() => {
+  test('Should throw if Encrypter throws', async () => {
+    jest.spyOn(_encrypterStub, 'encrypt').mockImplementationOnce(() => {
       throw new Error()
     })
     await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
