@@ -102,4 +102,12 @@ describe('DbAuthentication', () => {
     await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
     expect(updateAccessTokenSpy).toHaveBeenCalledWith('any_id', 'any_token')
   })
+
+  test('Should throw if UpdateAcessTokenRepository throws', async () => {
+    jest.spyOn(_updateAccessTokenStub, 'update').mockImplementationOnce(() => {
+      throw new Error()
+    })
+    await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
+      .rejects.toThrow()
+  })
 })
