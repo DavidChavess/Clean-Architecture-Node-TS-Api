@@ -10,8 +10,8 @@ import { makeSigunUpValidation } from './signup-validation'
 export const makeSigunUpController = (): Controller => {
   const addAccountRepository = new AccountMongoRepository()
   const salt = 12
-  const encrypter = new BcryptAdapter(salt)
-  const addAccount = new DbAddAccount(encrypter, addAccountRepository)
+  const hasher = new BcryptAdapter(salt)
+  const addAccount = new DbAddAccount(hasher, addAccountRepository)
   const signUpController = new SignUpController(addAccount, makeSigunUpValidation())
   const logMongoRepository = new LogMongoRepository()
   return new LogControllerDecorator(signUpController, logMongoRepository)
