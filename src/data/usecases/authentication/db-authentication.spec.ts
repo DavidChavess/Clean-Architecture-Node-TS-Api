@@ -31,7 +31,7 @@ class EncrypterStub implements Encrypter {
 }
 
 class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-  async update (id: string, token: string): Promise<void> {
+  async updateAccessToken (id: string, token: string): Promise<void> {
   }
 }
 
@@ -100,13 +100,13 @@ describe('DbAuthentication', () => {
   })
 
   test('Should call UpdateAcessTokenRepository with correct values', async () => {
-    const updateAccessTokenSpy = jest.spyOn(_updateAccessTokenStub, 'update')
+    const updateAccessTokenSpy = jest.spyOn(_updateAccessTokenStub, 'updateAccessToken')
     await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
     expect(updateAccessTokenSpy).toHaveBeenCalledWith('any_id', 'any_token')
   })
 
   test('Should throw if UpdateAcessTokenRepository throws', async () => {
-    jest.spyOn(_updateAccessTokenStub, 'update').mockImplementationOnce(() => {
+    jest.spyOn(_updateAccessTokenStub, 'updateAccessToken').mockImplementationOnce(() => {
       throw new Error()
     })
     await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
