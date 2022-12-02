@@ -1,9 +1,8 @@
 import { Collection } from 'mongodb'
-import { AddAccountModel } from '../../../../domain/usecases/add-account'
 import { MongoHelper } from '../helpers/mongo-helper'
 import { AccountMongoRepository } from './account'
 
-const makeAddAccountModel = (): AddAccountModel => ({
+const makeAddAccountModel = (): any => ({
   name: 'any_name',
   email: 'any_email@mail.com',
   password: 'any_password'
@@ -54,5 +53,17 @@ describe('Account Mongo Repository', () => {
     const sut = makeSut()
     const response = await sut.loadByEmail('any_email@mail.com')
     expect(response).toBeFalsy()
+  })
+
+  test('Should update the account accessToken on updateAccessToken success', async () => {
+    const sut = makeSut()
+    let account = makeAddAccountModel()
+    await accountCollection.insertOne(account)
+    expect(account.accessToken).toBeFalsy()
+    const id = account._id
+    await sut.updateAccessToken(id, 'any_token')
+    account = await accountCollection.findOne({ _id: id })
+    expect(account).toBeTruthy()
+    expect(account.accessToken).toBe('any_token')
   })
 })
