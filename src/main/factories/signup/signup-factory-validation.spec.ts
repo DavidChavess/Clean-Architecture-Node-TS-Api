@@ -1,7 +1,7 @@
 import { CompareFieldsValidation, EmailValidation, RequiredFieldValidation, ValidationComposite } from '../../../presentation/helpers/validators'
 import { Validation } from '../../../presentation/protocols/validation'
 import { EmailValidator } from '../../../presentation/protocols/email-validator'
-import { makeSigunUpValidation } from './signup-validation'
+import { makeSigunUpValidation } from './signup-factory-validation'
 
 class EmailValidatorStub implements EmailValidator {
   isValid (email: string): boolean {
