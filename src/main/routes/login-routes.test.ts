@@ -1,8 +1,19 @@
 import app from '../config/app'
 import request from 'supertest'
 import { MongoHelper } from '../../infra/db/mongodb/helpers/mongo-helper'
+import { Collection } from 'mongodb'
+import bcrypt from 'bcrypt'
+
+const makeAccount = (): any => ({
+  name: 'David',
+  email: 'david@gmail.com',
+  password: '123',
+  passwordConfirmation: '123'
+})
 
 describe('Login - Routes', () => {
+  let accountCollection: Collection
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
   })
@@ -12,7 +23,7 @@ describe('Login - Routes', () => {
   })
 
   beforeEach(async () => {
-    const accountCollection = await MongoHelper.getCollection('accounts')
+    accountCollection = await MongoHelper.getCollection('accounts')
     await accountCollection.deleteMany({})
   })
 
@@ -20,13 +31,26 @@ describe('Login - Routes', () => {
     test('Should return 201 on signup', async () => {
       await request(app)
         .post('/api/signup')
-        .send({
-          name: 'David',
-          email: 'david@gmail.com',
-          password: '123',
-          passwordConfirmation: '123'
-        })
+        .send(makeAccount())
         .expect(201)
+    })
+  })
+
+  describe('POST /login', () => {
+    test('Should return 200 on login', async () => {
+      const password = await bcrypt.hash('123', 12)
+      await accountCollection.insertOne({
+        name: 'David',
+        email: 'david@gmail.com',
+        password
+      })
+      await request(app)
+        .post('/api/login')
+        .send({
+          email: 'david@gmail.com',
+          password: '123'
+        })
+        .expect(200)
     })
   })
 })
