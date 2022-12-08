@@ -1,13 +1,14 @@
-version: '3.7'
+version: '3.8'
+
 services:
-  mongo:
-    container_name: mongo_container
-    image: mongo:3
+  mongo: 
+    container_name: clean-node-mongo
+    image: mongo:5.0
     restart: always
-    volumes: 
-      - ./data:/data/db
+    volumes:
+      - /data:/data/db
     ports:
-      - "27017:27017"
+      - 27017:27017
   api:
     container_name: api_container
     build: .
@@ -17,6 +18,8 @@ services:
     volumes:
       - ./dist:/usr/src/clean-node-api/dist
     ports:
-      - "5050:5050"
+      - 5050:5050
     depends_on:
+      - mongo
+    links:
       - mongo
