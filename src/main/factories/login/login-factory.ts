@@ -7,7 +7,7 @@ import { LogMongoRepository } from '../../../infra/db/mongodb/log/log-mongo-repo
 import { AccountMongoRepository } from '../../../infra/db/mongodb/account/account-mongo-repository'
 import { BcryptAdapter } from '../../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
 import { JwtAdapter } from '../../../infra/criptography/jwt-adapter/jwt-adapter'
-import { UpdateAccessTokenRabbitMqQueue } from '../../../infra/queue/update-access-token-rabbit-mq-queue'
+import { UpdateAccessTokenRabbitMqQueue } from '../../../infra/queue/accessToken/update-access-token-rabbit-mq-queue'
 import { makeLoginValidation } from './login-factory-validation'
 
 export const makeLoginController = (): Controller => {
