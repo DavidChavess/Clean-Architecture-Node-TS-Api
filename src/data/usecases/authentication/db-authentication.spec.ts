@@ -4,7 +4,7 @@ import {
   LoadAccountByEmailRepository,
   HashComparer,
   Encrypter,
-  UpdateAccessTokenRepository
+  UpdateAccessTokenQueue
 } from './db-authentication-protocols'
 
 class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
@@ -30,8 +30,8 @@ class EncrypterStub implements Encrypter {
   }
 }
 
-class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-  async updateAccessToken (id: string, token: string): Promise<void> {
+class UpdateAccessTokenQueueStub implements UpdateAccessTokenQueue {
+  async send (updateAccessTokenModel: any): Promise<void> {
   }
 }
 
@@ -40,14 +40,14 @@ describe('DbAuthentication', () => {
   let _hashComparerStub: HashComparerStub
   let _loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub
   let _encrypterStub: EncrypterStub
-  let _updateAccessTokenStub: UpdateAccessTokenRepositoryStub
+  let _updateAccessTokenQueueStub: UpdateAccessTokenQueueStub
 
   beforeEach(() => {
     _loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
     _hashComparerStub = new HashComparerStub()
     _encrypterStub = new EncrypterStub()
-    _updateAccessTokenStub = new UpdateAccessTokenRepositoryStub()
-    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _encrypterStub, _updateAccessTokenStub)
+    _updateAccessTokenQueueStub = new UpdateAccessTokenQueueStub()
+    _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _encrypterStub, _updateAccessTokenQueueStub)
   })
 
   test('Should call loadAccountByEmailRepository with correct email', async () => {
@@ -99,14 +99,14 @@ describe('DbAuthentication', () => {
     expect(response).toBe('any_token')
   })
 
-  test('Should call UpdateAcessTokenRepository with correct values', async () => {
-    const updateAccessTokenSpy = jest.spyOn(_updateAccessTokenStub, 'updateAccessToken')
+  test('Should call UpdateAcessTokenQueue with correct values', async () => {
+    const updateAccessTokenQueueSpy = jest.spyOn(_updateAccessTokenQueueStub, 'send')
     await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
-    expect(updateAccessTokenSpy).toHaveBeenCalledWith('any_id', 'any_token')
+    expect(updateAccessTokenQueueSpy).toHaveBeenCalledWith({ id: 'any_id', accessToken: 'any_token' })
   })
 
-  test('Should throw if UpdateAcessTokenRepository throws', async () => {
-    jest.spyOn(_updateAccessTokenStub, 'updateAccessToken').mockImplementationOnce(() => {
+  test('Should throw if UpdateAcessTokenQueue throws', async () => {
+    jest.spyOn(_updateAccessTokenQueueStub, 'send').mockImplementationOnce(() => {
       throw new Error()
     })
     await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))

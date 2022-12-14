@@ -4,7 +4,7 @@ import {
   LoadAccountByEmailRepository,
   HashComparer,
   Encrypter,
-  UpdateAccessTokenRepository
+  UpdateAccessTokenQueue
 } from './db-authentication-protocols'
 
 export class DbAuthentication implements Authentication {
@@ -12,7 +12,7 @@ export class DbAuthentication implements Authentication {
     private readonly loadAccountByEmailRepository: LoadAccountByEmailRepository,
     private readonly hashComparer: HashComparer,
     private readonly encrypter: Encrypter,
-    private readonly updateAccessTokenRepository: UpdateAccessTokenRepository
+    private readonly updateAccessTokenQueue: UpdateAccessTokenQueue
   ) {}
 
   async auth (authentication: AuthenticationModel): Promise<string | null> {
@@ -25,7 +25,7 @@ export class DbAuthentication implements Authentication {
       return null
     }
     const accessToken = await this.encrypter.encrypt(account.id)
-    await this.updateAccessTokenRepository.updateAccessToken(account.id, accessToken)
+    await this.updateAccessTokenQueue.send({ id: account.id, accessToken })
     return accessToken
   }
 }

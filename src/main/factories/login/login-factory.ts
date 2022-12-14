@@ -7,6 +7,7 @@ import { LogMongoRepository } from '../../../infra/db/mongodb/log/log-mongo-repo
 import { AccountMongoRepository } from '../../../infra/db/mongodb/account/account-mongo-repository'
 import { BcryptAdapter } from '../../../infra/criptography/bcrypt-adapter/bcrypt-adapter'
 import { JwtAdapter } from '../../../infra/criptography/jwt-adapter/jwt-adapter'
+import { UpdateAccessTokenRabbitMqQueue } from '../../../infra/queue/update-access-token-rabbit-mq-queue'
 import { makeLoginValidation } from './login-factory-validation'
 
 export const makeLoginController = (): Controller => {
@@ -14,7 +15,8 @@ export const makeLoginController = (): Controller => {
   const bcryptAdapter = new BcryptAdapter(salt)
   const jwtAdapter = new JwtAdapter(env.jwtSecret)
   const accountMongoRepository = new AccountMongoRepository()
-  const dbAuthentication = new DbAuthentication(accountMongoRepository, bcryptAdapter, jwtAdapter, accountMongoRepository)
+  const updateAccessTokenRabbitMqQueue = new UpdateAccessTokenRabbitMqQueue()
+  const dbAuthentication = new DbAuthentication(accountMongoRepository, bcryptAdapter, jwtAdapter, updateAccessTokenRabbitMqQueue)
   const loginController = new LoginController(dbAuthentication, makeLoginValidation())
   const logErrorRepository = new LogMongoRepository()
   return new LogControllerDecorator(loginController, logErrorRepository)
