@@ -5,6 +5,7 @@ import { LogMongoRepository } from '../../../infra/db/mongodb/log/log-mongo-repo
 import { SignUpController } from '../../../presentation/controllers/signup-controller'
 import { Controller } from '../../../presentation/protocols'
 import { LogControllerDecorator } from '../../decorators/log-controller-decorator'
+import { makeDbAuthentication } from '../login/login-factory'
 import { makeSigunUpValidation } from './signup-factory-validation'
 
 export const makeSigunUpController = (): Controller => {
@@ -12,7 +13,7 @@ export const makeSigunUpController = (): Controller => {
   const salt = 12
   const hasher = new BcryptAdapter(salt)
   const addAccount = new DbAddAccount(hasher, addAccountRepository)
-  const signUpController = new SignUpController(addAccount, makeSigunUpValidation())
+  const signUpController = new SignUpController(addAccount, makeSigunUpValidation(), makeDbAuthentication())
   const logMongoRepository = new LogMongoRepository()
   return new LogControllerDecorator(signUpController, logMongoRepository)
 }
