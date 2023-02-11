@@ -1,10 +1,11 @@
-import { AccountModel, AddAccountModel, Hasher, AddAccountRepository } from './db-add-account-protocol'
+import { AccountModel, AddAccountModel, Hasher, AddAccountRepository, LoadAccountByEmailRepository } from './db-add-account-protocol'
 import { DbAddAccount } from './db-add-account'
 
 interface SutTypes {
   sut: DbAddAccount
   hasherStub: Hasher
   addAccountRepoStub: AddAccountRepository
+  loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
 }
 
 const makeHasher = (): Hasher => {
@@ -28,21 +29,36 @@ const makeAddAccountRepository = (): AddAccountRepository => {
 const makeFakeAddAccount = (): AccountModel => ({
   id: 'valid_id',
   name: 'valid_name',
-  email: 'valid_email',
+  email: 'valid_email@mail.com',
   password: 'hashed_password'
 })
 
 const makeFakeAddAccountModel = (): AddAccountModel => ({
   name: 'valid_name',
-  email: 'valid_email',
+  email: 'valid_email@mail.com',
   password: 'valid_password'
 })
+
+const makeLoadAccountByEmail = (): LoadAccountByEmailRepository => {
+  class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
+    async loadByEmail (email: string): Promise<AccountModel | null> {
+      return {
+        id: 'any_id',
+        email: 'valid_email@mail.com',
+        name: 'any_name',
+        password: 'hashed_password'
+      }
+    }
+  }
+  return new LoadAccountByEmailRepositoryStub()
+}
 
 const makeSut = (): SutTypes => {
   const hasherStub = makeHasher()
   const addAccountRepoStub = makeAddAccountRepository()
-  const sut = new DbAddAccount(hasherStub, addAccountRepoStub)
-  return { sut, hasherStub, addAccountRepoStub }
+  const loadAccountByEmailRepositoryStub = makeLoadAccountByEmail()
+  const sut = new DbAddAccount(hasherStub, addAccountRepoStub, loadAccountByEmailRepositoryStub)
+  return { sut, hasherStub, addAccountRepoStub, loadAccountByEmailRepositoryStub }
 }
 
 describe('DbAddAccount Usecase', () => {
@@ -66,7 +82,7 @@ describe('DbAddAccount Usecase', () => {
     await sut.add(makeFakeAddAccountModel())
     expect(addAccountSpy).toHaveBeenCalledWith({
       name: 'valid_name',
-      email: 'valid_email',
+      email: 'valid_email@mail.com',
       password: 'hashed_password'
     })
   })
@@ -82,5 +98,12 @@ describe('DbAddAccount Usecase', () => {
     const { sut } = makeSut()
     const account = await sut.add(makeFakeAddAccountModel())
     expect(account).toEqual(makeFakeAddAccount())
+  })
+
+  test('Should call loadAccountByEmailRepository with correct email', async () => {
+    const { sut, loadAccountByEmailRepositoryStub } = makeSut()
+    const loadAccountSpy = jest.spyOn(loadAccountByEmailRepositoryStub, 'loadByEmail')
+    await sut.add(makeFakeAddAccountModel())
+    expect(loadAccountSpy).toHaveBeenCalledWith('valid_email@mail.com')
   })
 })
