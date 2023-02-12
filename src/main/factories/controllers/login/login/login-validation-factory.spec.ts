@@ -1,7 +1,7 @@
 import { makeLoginValidation } from './login-validation-factory'
-import { EmailValidator } from '../../../../validation/protocols/email-validator'
-import { Validation } from '../../../../presentation/protocols/validation'
-import { RequiredFieldValidation, EmailValidation, ValidationComposite } from '../../../../validation/validators'
+import { EmailValidator } from '../../../../../validation/protocols/email-validator'
+import { Validation } from '../../../../../presentation/protocols/validation'
+import { EmailValidation, RequiredFieldValidation, ValidationComposite } from '../../../../../validation/validators'
 
 class EmailValidatorStub implements EmailValidator {
   isValid (email: string): boolean {
@@ -9,7 +9,7 @@ class EmailValidatorStub implements EmailValidator {
   }
 }
 
-jest.mock('../../../../validation/validators/validation-composite')
+jest.mock('../../../../../validation/validators/validation-composite')
 
 describe('LoginValidation Factory', () => {
   test('Should call ValidationComposite with all validations', () => {
