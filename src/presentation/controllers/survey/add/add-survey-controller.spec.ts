@@ -1,4 +1,4 @@
-import { HttpRequest } from './add-survey-protocols'
+import { AddSurvey, AddSurveyModel, HttpRequest } from './add-survey-protocols'
 import { Validation } from '../../../protocols/validation'
 import { AddSurveyController } from './add-survey-controller'
 import { MissingParamError } from '../../../errors'
@@ -10,23 +10,31 @@ class ValidationStub implements Validation {
   }
 }
 
+class AddSurveyStub implements AddSurvey {
+  async add (data: AddSurveyModel): Promise<void> {
+    return Promise.resolve()
+  }
+}
+
 const makeHttpRequest = (): HttpRequest => ({
   body: {
     question: 'any_question',
     answers: [{
       image: 'any_image',
-      asnwer: 'any_answer'
+      answer: 'any_answer'
     }]
   }
 })
 
 describe('AddSurvey Controller', () => {
   let _sut: AddSurveyController
-  let _validationStub: Validation
+  let _validationStub: ValidationStub
+  let _addSurveyStub: AddSurveyStub
 
   beforeEach(() => {
     _validationStub = new ValidationStub()
-    _sut = new AddSurveyController(_validationStub)
+    _addSurveyStub = new AddSurveyStub()
+    _sut = new AddSurveyController(_validationStub, _addSurveyStub)
   })
 
   test('Should call Validation with correct values', async () => {
@@ -39,5 +47,11 @@ describe('AddSurvey Controller', () => {
     jest.spyOn(_validationStub, 'validate').mockReturnValueOnce(new MissingParamError('question'))
     const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(badRequest(new MissingParamError('question')))
+  })
+
+  test('Should call AddSurvey with correct values', async () => {
+    const spyAddSurvey = jest.spyOn(_addSurveyStub, 'add')
+    await _sut.handle(makeHttpRequest())
+    expect(spyAddSurvey).toHaveBeenCalledWith(makeHttpRequest().body)
   })
 })
