@@ -34,8 +34,9 @@ describe('Auth Middleware', () => {
 
   test('Should calls LoadAccountByToken with correct values', async () => {
     const loadAccountSpy = jest.spyOn(_loadAccountByTokenStub, 'load')
-    await _sut.handle(makeFakeRequest())
-    expect(loadAccountSpy).toHaveBeenCalledWith('any_token')
+    const sut = new AuthMiddleware(_loadAccountByTokenStub, 'admin')
+    await sut.handle(makeFakeRequest())
+    expect(loadAccountSpy).toHaveBeenCalledWith('any_token', 'admin')
   })
 
   test('Should return 403 if LoadAccountByToken returns null', async () => {
