@@ -1,4 +1,4 @@
-import { forbidden, AccessDeniedError, LoadAccountByToken, AccountModel } from './auth-middleware-protocols'
+import { forbidden, AccessDeniedError, LoadAccountByToken, AccountModel, HttpRequest } from './auth-middleware-protocols'
 import { AuthMiddleware } from './auth-middleware'
 
 const makeFakeAccountModel = (): AccountModel => ({
@@ -6,6 +6,10 @@ const makeFakeAccountModel = (): AccountModel => ({
   name: 'valid name',
   email: 'valid email',
   password: 'valid password'
+})
+
+const makeFakeRequest = (): HttpRequest => ({
+  headers: { 'x-access-token': 'any_token' }
 })
 
 class LoadAccountByTokenStub implements LoadAccountByToken {
@@ -30,7 +34,7 @@ describe('Auth Middleware', () => {
 
   test('Should calls LoadAccountByToken with correct values', async () => {
     const loadAccountSpy = jest.spyOn(_loadAccountByTokenStub, 'load')
-    await _sut.handle({ headers: { 'x-access-token': 'any_token' } })
+    await _sut.handle(makeFakeRequest())
     expect(loadAccountSpy).toHaveBeenCalledWith('any_token')
   })
 })
