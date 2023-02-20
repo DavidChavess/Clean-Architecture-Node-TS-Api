@@ -1,4 +1,4 @@
-import { forbidden, AccessDeniedError, LoadAccountByToken, AccountModel, HttpRequest } from './auth-middleware-protocols'
+import { ok, forbidden, AccessDeniedError, LoadAccountByToken, AccountModel, HttpRequest } from './auth-middleware-protocols'
 import { AuthMiddleware } from './auth-middleware'
 
 const makeFakeAccountModel = (): AccountModel => ({
@@ -38,9 +38,14 @@ describe('Auth Middleware', () => {
     expect(loadAccountSpy).toHaveBeenCalledWith('any_token')
   })
 
-  test('Should returns 403 if LoadAccountByToken returns null', async () => {
+  test('Should return 403 if LoadAccountByToken returns null', async () => {
     jest.spyOn(_loadAccountByTokenStub, 'load').mockResolvedValueOnce(null)
     const httpResponse = await _sut.handle(makeFakeRequest())
     expect(httpResponse).toEqual(forbidden(new AccessDeniedError()))
+  })
+
+  test('Should return 200 if LoadAccountByToken returns an account', async () => {
+    const httpResponse = await _sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(ok({ accountId: 'valid id' }))
   })
 })

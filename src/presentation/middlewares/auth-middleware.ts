@@ -1,4 +1,4 @@
-import { noContent, forbidden, AccessDeniedError, HttpRequest, HttpResponse, Middleware, LoadAccountByToken } from './auth-middleware-protocols'
+import { ok, forbidden, AccessDeniedError, HttpRequest, HttpResponse, Middleware, LoadAccountByToken } from './auth-middleware-protocols'
 
 export class AuthMiddleware implements Middleware {
   constructor (private readonly loadAccountByToken: LoadAccountByToken) {}
@@ -14,6 +14,6 @@ export class AuthMiddleware implements Middleware {
       return forbidden(new AccessDeniedError())
     }
 
-    return noContent()
+    return ok({ accountId: account.id })
   }
 }
