@@ -3,6 +3,7 @@ import { Validation } from '../../../protocols/validation'
 import { AddSurveyController } from './add-survey-controller'
 import { MissingParamError } from '../../../errors'
 import { badRequest, noContent, serverError } from '../../../helpers/http/http-helper'
+import MockDate from 'mockdate'
 
 class ValidationStub implements Validation {
   validate (input: string): Error | null {
@@ -22,7 +23,8 @@ const makeHttpRequest = (): HttpRequest => ({
     answers: [{
       image: 'any_image',
       answer: 'any_answer'
-    }]
+    }],
+    date: new Date()
   }
 })
 
@@ -35,6 +37,14 @@ describe('AddSurvey Controller', () => {
     _validationStub = new ValidationStub()
     _addSurveyStub = new AddSurveyStub()
     _sut = new AddSurveyController(_validationStub, _addSurveyStub)
+  })
+
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.set(new Date())
   })
 
   test('Should call Validation with correct values', async () => {

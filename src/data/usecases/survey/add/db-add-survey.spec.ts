@@ -12,7 +12,8 @@ const makeFakeAddSurveyModel = (): AddSurveyModel => ({
   answers: [{
     image: 'any_image',
     answer: 'any_answer'
-  }]
+  }],
+  date: new Date()
 })
 
 describe('DbAddSurvey Usecase', () => {
