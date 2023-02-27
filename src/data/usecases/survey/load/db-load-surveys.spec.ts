@@ -17,7 +17,7 @@ const makeSurveys = (): SurveyModel[] => ([
 ])
 
 class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-  async load (): Promise<SurveyModel[]> {
+  async loadAll (): Promise<SurveyModel[]> {
     return makeSurveys()
   }
 }
@@ -32,8 +32,13 @@ describe('DbLoadSurveys Usecase', () => {
   })
 
   test('Should call LoadSurveysRepository', async () => {
-    const spyLoadSurveysRepository = jest.spyOn(_loadSurveysRepositoryStub, 'load')
+    const spyLoadSurveysRepository = jest.spyOn(_loadSurveysRepositoryStub, 'loadAll')
     await _sut.load()
     expect(spyLoadSurveysRepository).toHaveBeenCalled()
+  })
+
+  test('Should return a list of Surveys on success', async () => {
+    const surveys = await _sut.load()
+    expect(surveys).toEqual(makeSurveys())
   })
 })
