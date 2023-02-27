@@ -1,5 +1,5 @@
 import { LoadSurveysController } from './load-surveys-controller'
-import { LoadSurveys, SurveyModel, ok, serverError } from './load-surveys-protocols'
+import { LoadSurveys, SurveyModel, noContent, ok, serverError } from './load-surveys-protocols'
 import MockDate from 'mockdate'
 
 const makeSurveys = (): SurveyModel[] => ([
@@ -40,18 +40,24 @@ describe('LoadSurvey Controller', () => {
     MockDate.set(new Date())
   })
 
-  test('should call LoadSurveys with correct values', async () => {
+  test('Should call LoadSurveys with correct values', async () => {
     const loadSurveysSpy = jest.spyOn(_loadSurveysStub, 'load')
     await _sut.handle({})
     expect(loadSurveysSpy).toHaveBeenCalled()
   })
 
-  test('should return 200 on loadSurveys on success', async () => {
+  test('Should return 200 on LoadSurveys on success', async () => {
     const httpResponse = await _sut.handle({})
     expect(httpResponse).toEqual(ok(makeSurveys()))
   })
 
-  test('should return 500 if LoadSurveys throws', async () => {
+  test('Should return 204 if LoadSurveys returns empty', async () => {
+    jest.spyOn(_loadSurveysStub, 'load').mockResolvedValueOnce([])
+    const httpResponse = await _sut.handle({})
+    expect(httpResponse).toEqual(noContent())
+  })
+
+  test('Should return 500 if LoadSurveys throws', async () => {
     jest.spyOn(_loadSurveysStub, 'load').mockRejectedValueOnce(new Error('any_error'))
     const httpResponse = await _sut.handle({})
     expect(httpResponse).toEqual(serverError(new Error('any_error')))
