@@ -1,5 +1,6 @@
 import { DbLoadSurveys } from './db-load-surveys'
 import { LoadSurveysRepository, SurveyModel } from './db-load-surveys-protocols'
+import MockDate from 'mockdate'
 
 const makeSurveys = (): SurveyModel[] => ([
   {
@@ -25,6 +26,14 @@ class LoadSurveysRepositoryStub implements LoadSurveysRepository {
 describe('DbLoadSurveys Usecase', () => {
   let _sut: DbLoadSurveys
   let _loadSurveysRepositoryStub: LoadSurveysRepositoryStub
+
+  beforeAll(async () => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(async () => {
+    MockDate.reset()
+  })
 
   beforeEach(() => {
     _loadSurveysRepositoryStub = new LoadSurveysRepositoryStub()
