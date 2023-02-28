@@ -10,6 +10,7 @@ const makeAddSurveyModel = (): any => ({
   }],
   date: new Date()
 })
+
 describe('Survey Mongo Repository', () => {
   let accountCollection: Collection
 
@@ -30,10 +31,15 @@ describe('Survey Mongo Repository', () => {
     return new SurveyMongoRepository()
   }
 
-  test('Should add a new survey on add success', async () => {
-    const sut = makeSut()
-    await sut.add(makeAddSurveyModel())
-    const response = await accountCollection.findOne({ question: 'any_question' })
-    expect(response).toBeTruthy()
+  describe('add()', () => {
+    test('Should add a new survey on add success', async () => {
+      const sut = makeSut()
+      await sut.add(makeAddSurveyModel())
+      const response = await accountCollection.findOne({ question: 'any_question' })
+      expect(response).toBeTruthy()
+    })
+  })
+
+  describe('loadAll()', () => {
   })
 })
