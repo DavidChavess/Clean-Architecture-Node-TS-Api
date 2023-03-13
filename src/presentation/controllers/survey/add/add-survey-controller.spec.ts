@@ -1,8 +1,7 @@
-import { AddSurvey, AddSurveyModel, HttpRequest } from './add-survey-protocols'
-import { Validation } from '../../../protocols/validation'
+import { AddSurvey, AddSurveyModel, Validation, HttpRequest } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
-import { MissingParamError } from '../../../errors'
-import { badRequest, noContent, serverError } from '../../../helpers/http/http-helper'
+import { MissingParamError } from '@/presentation/errors'
+import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
 
 class ValidationStub implements Validation {

@@ -1,5 +1,12 @@
-import { Controller, HttpRequest, HttpResponse } from '../../../protocols'
-import { LoadSurveys, noContent, ok, serverError } from './load-surveys-protocols'
+import {
+  Controller,
+  HttpRequest,
+  HttpResponse,
+  noContent,
+  ok,
+  serverError,
+  LoadSurveys
+} from './load-surveys-protocols'
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}

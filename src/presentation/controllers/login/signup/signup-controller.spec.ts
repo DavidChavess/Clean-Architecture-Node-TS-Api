@@ -1,7 +1,7 @@
 import { SignUpController } from './signup-controller'
 import { AddAccount, AddAccountModel, AccountModel, HttpRequest, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
-import { MissingParamError, EmailInUseError } from '../../../errors'
-import { badRequest, created, forbidden, serverError } from '../../../helpers/http/http-helper'
+import { MissingParamError, EmailInUseError } from '@/presentation/errors'
+import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 
 class AddAccountStub implements AddAccount {
   async add (account: AddAccountModel): Promise<AccountModel | null> {
