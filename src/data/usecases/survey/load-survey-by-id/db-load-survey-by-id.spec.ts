@@ -37,4 +37,9 @@ describe('DbLoadSurveyById Usecase', () => {
     await _sut.loadById('any_id')
     expect(spyLoadSurveyByIdRepo).toHaveBeenCalledWith('any_id')
   })
+
+  test('Should return survey on success', async () => {
+    const survey = await _sut.loadById('any_id')
+    expect(survey).toEqual(makeSurvey())
+  })
 })
