@@ -41,4 +41,9 @@ describe('DbSaveSurveyResult Usecase', () => {
     await _sut.save(makeSaveSurveyResultModel())
     expect(saveSurveyResultRepoSpy).toHaveBeenCalledWith(makeSaveSurveyResultModel())
   })
+
+  test('Should return SurveyResultModel on success', async () => {
+    const survey = await _sut.save(makeSaveSurveyResultModel())
+    expect(survey).toEqual(makeSurveyResultModel())
+  })
 })
