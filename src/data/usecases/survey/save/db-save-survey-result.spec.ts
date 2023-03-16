@@ -21,7 +21,7 @@ class SaveSurveyResultRepositoryStub implements SaveSurveyResultRepository {
 
 describe('DbSaveSurveyResult Usecase', () => {
   let _sut: DbSaveSurveyResult
-  let _loadSurveyByIdRepositoryStub: SaveSurveyResultRepositoryStub
+  let _saveSurveyResultRepositoryStub: SaveSurveyResultRepositoryStub
 
   beforeAll(async () => {
     MockDate.set(new Date())
@@ -32,12 +32,12 @@ describe('DbSaveSurveyResult Usecase', () => {
   })
 
   beforeEach(() => {
-    _loadSurveyByIdRepositoryStub = new SaveSurveyResultRepositoryStub()
-    _sut = new DbSaveSurveyResult(_loadSurveyByIdRepositoryStub)
+    _saveSurveyResultRepositoryStub = new SaveSurveyResultRepositoryStub()
+    _sut = new DbSaveSurveyResult(_saveSurveyResultRepositoryStub)
   })
 
   test('Should call SaveSurveyResultRepository with correct values', async () => {
-    const saveSurveyResultRepoSpy = jest.spyOn(_loadSurveyByIdRepositoryStub, 'save')
+    const saveSurveyResultRepoSpy = jest.spyOn(_saveSurveyResultRepositoryStub, 'save')
     await _sut.save(makeSaveSurveyResultModel())
     expect(saveSurveyResultRepoSpy).toHaveBeenCalledWith(makeSaveSurveyResultModel())
   })
@@ -48,7 +48,7 @@ describe('DbSaveSurveyResult Usecase', () => {
   })
 
   test('Should throws if SaveSurveyResultRepository throw', async () => {
-    jest.spyOn(_loadSurveyByIdRepositoryStub, 'save').mockRejectedValueOnce(new Error())
+    jest.spyOn(_saveSurveyResultRepositoryStub, 'save').mockRejectedValueOnce(new Error())
     const promise = _sut.save(makeSaveSurveyResultModel())
     await expect(promise).rejects.toThrow(new Error())
   })
