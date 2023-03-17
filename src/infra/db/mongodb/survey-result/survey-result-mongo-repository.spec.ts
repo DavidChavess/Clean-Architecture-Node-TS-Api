@@ -50,6 +50,17 @@ describe('Survey Result Mongo Repository', () => {
     return survey
   }
 
+  const makeSurveyResultWithAccountIdAndSurveyId = async (accountId, surveyId): Promise<any> => {
+    const surveyResult = {
+      accountId,
+      surveyId,
+      answer: 'any_answer',
+      date: new Date()
+    }
+    await surveyResultsCollection.insertOne(surveyResult)
+    return surveyResult
+  }
+
   const makeSut = (): SurveyResultMongoRepository => {
     return new SurveyResultMongoRepository()
   }
@@ -68,6 +79,21 @@ describe('Survey Result Mongo Repository', () => {
       expect(surveyResult).toBeTruthy()
       expect(surveyResult.id).toBeTruthy()
       expect(surveyResult.answer).toBe(survey.answers[0].answer)
+    })
+
+    test('Should update survey result if its not new', async () => {
+      const surveyResult = await makeSurveyResultWithAccountIdAndSurveyId('any_account_id', 'any_survey_id')
+      const sut = makeSut()
+      const surveyResultResponse = await sut.save({
+        accountId: surveyResult.accountId,
+        surveyId: surveyResult.surveyId,
+        answer: 'updated_answer',
+        date: new Date()
+      })
+
+      expect(surveyResultResponse).toBeTruthy()
+      expect(surveyResultResponse.id).toEqual(surveyResult._id)
+      expect(surveyResultResponse.answer).toBe('updated_answer')
     })
   })
 })
