@@ -1,6 +1,6 @@
 import { InvalidParamError } from '@/presentation/errors'
 import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './save-survey-result-controller-protocols'
-import { forbidden, serverError } from '@/presentation/helpers/http/http-helper'
+import { forbidden, serverError, unauthorized } from '@/presentation/helpers/http/http-helper'
 
 export class SaveSurveyResultController implements Controller {
   constructor (private readonly loadSurveyById: LoadSurveyById) {}
@@ -9,6 +9,11 @@ export class SaveSurveyResultController implements Controller {
     try {
       const { surveyId } = httpRequest.params
       const { answer } = httpRequest.body
+      const { accountId } = httpRequest
+
+      if (!accountId) {
+        return unauthorized()
+      }
 
       const survey = await this.loadSurveyById.loadById(surveyId)
       if (!survey) {

@@ -1,6 +1,6 @@
 import { HttpRequest, SurveyModel, LoadSurveyById } from './save-survey-result-controller-protocols'
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { forbidden, serverError } from '../survey/load/load-surveys-protocols'
+import { forbidden, serverError, unauthorized } from '../survey/load/load-surveys-protocols'
 import { InvalidParamError } from '@/presentation/errors'
 
 const makeFakeSurvey = (): SurveyModel => ({
@@ -19,7 +19,8 @@ const makeFakeRequest = (): HttpRequest => ({
   },
   body: {
     answer: 'any_answer'
-  }
+  },
+  accountId: 'any_account_id'
 })
 
 class LoadSurveyByIdStub implements LoadSurveyById {
@@ -62,8 +63,21 @@ describe('SaveSurveuResult Controller', () => {
       },
       body: {
         answer: 'other_answer'
-      }
+      },
+      accountId: 'any_account_id'
     })
     expect(httpResponse).toEqual(forbidden(new InvalidParamError('answer')))
+  })
+
+  test('Should returns 401 if accountId is not provided', async () => {
+    const httpResponse = await _sut.handle({
+      params: {
+        surveyId: 'any_id'
+      },
+      body: {
+        answer: 'any_answer'
+      }
+    })
+    expect(httpResponse).toEqual(unauthorized())
   })
 })
