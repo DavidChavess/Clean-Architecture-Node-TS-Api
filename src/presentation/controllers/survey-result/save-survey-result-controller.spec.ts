@@ -114,4 +114,10 @@ describe('SaveSurveuResult Controller', () => {
       date: new Date()
     })
   })
+
+  test('Should returns 500 if SaveSurveyResult throws', async () => {
+    jest.spyOn(_saveSurveyResultStub, 'save').mockRejectedValueOnce(new Error('any_error'))
+    const httpResponse = await _sut.handle(makeFakeRequest())
+    expect(httpResponse).toEqual(serverError(new Error('any_error')))
+  })
 })
