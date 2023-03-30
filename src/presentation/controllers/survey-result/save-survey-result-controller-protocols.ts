@@ -1,3 +1,5 @@
-export * from '@/domain/usecases/survey/load-survey-by-id'
 export * from '@/domain/models/survey-model'
+export * from '@/domain/usecases/survey/load-survey-by-id'
+export * from '@/domain/models/survey-result-model'
+export * from '@/domain/usecases/survey-result/save-survey-result'
 export * from '@/presentation/protocols'
