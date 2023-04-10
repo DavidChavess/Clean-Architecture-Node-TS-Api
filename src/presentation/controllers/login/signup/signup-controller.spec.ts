@@ -1,5 +1,5 @@
 import { SignUpController } from './signup-controller'
-import { AddAccount, AddAccountParams, AccountModel, HttpRequest, Validation, Authentication, AuthenticationModel } from './signup-controller-protocols'
+import { AddAccount, AddAccountParams, AccountModel, HttpRequest, Validation, Authentication, AuthenticationParams } from './signup-controller-protocols'
 import { MissingParamError, EmailInUseError } from '@/presentation/errors'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 
@@ -16,7 +16,7 @@ class ValidationStub implements Validation {
 }
 
 class AuthenticationStub implements Authentication {
-  async auth (authenticationModel: AuthenticationModel): Promise<string> {
+  async auth (authenticationParams: AuthenticationParams): Promise<string> {
     return 'any_token'
   }
 }
