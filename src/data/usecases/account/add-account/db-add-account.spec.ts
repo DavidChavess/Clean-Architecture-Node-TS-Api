@@ -1,4 +1,4 @@
-import { AccountModel, AddAccountModel, Hasher, AddAccountRepository, LoadAccountByEmailRepository } from './db-add-account-protocols'
+import { AccountModel, AddAccountParams, Hasher, AddAccountRepository, LoadAccountByEmailRepository } from './db-add-account-protocols'
 import { DbAddAccount } from './db-add-account'
 
 type SutTypes = {
@@ -19,7 +19,7 @@ const makeHasher = (): Hasher => {
 
 const makeAddAccountRepository = (): AddAccountRepository => {
   class AddAccountRepositoryStub implements AddAccountRepository {
-    async add (accountData: AddAccountModel): Promise<AccountModel> {
+    async add (accountData: AddAccountParams): Promise<AccountModel> {
       return makeFakeAddAccount()
     }
   }
@@ -33,7 +33,7 @@ const makeFakeAddAccount = (): AccountModel => ({
   password: 'hashed_password'
 })
 
-const makeFakeAddAccountModel = (): AddAccountModel => ({
+const makeFakeAddAccountModel = (): AddAccountParams => ({
   name: 'valid_name',
   email: 'valid_email@mail.com',
   password: 'valid_password'
