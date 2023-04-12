@@ -1,25 +1,9 @@
 import { SignUpController } from './signup-controller'
-import { AddAccount, AddAccountParams, AccountModel, HttpRequest, Validation, Authentication, AuthenticationParams } from './signup-controller-protocols'
+import { AddAccount, HttpRequest, Validation, Authentication } from './signup-controller-protocols'
 import { MissingParamError, EmailInUseError } from '@/presentation/errors'
 import { badRequest, created, forbidden, serverError } from '@/presentation/helpers/http/http-helper'
-
-class AddAccountStub implements AddAccount {
-  async add (account: AddAccountParams): Promise<AccountModel | null> {
-    return makeFakeAccount()
-  }
-}
-
-class ValidationStub implements Validation {
-  validate (input: string): Error | null {
-    return null
-  }
-}
-
-class AuthenticationStub implements Authentication {
-  async auth (authenticationParams: AuthenticationParams): Promise<string> {
-    return 'any_token'
-  }
-}
+import { mockValidation } from '@/validation/test'
+import { mockAddAccount, mockAuthentication } from '@/presentation/test'
 
 const makeHttpRequest = (): HttpRequest => ({
   body: {
@@ -30,13 +14,6 @@ const makeHttpRequest = (): HttpRequest => ({
   }
 })
 
-const makeFakeAccount = (): AccountModel => ({
-  id: 'valid id',
-  name: 'valid name',
-  email: 'valid email',
-  password: 'valid password'
-})
-
 describe('Signup Controller', () => {
   let _sut: SignUpController
   let _addAccountStub: AddAccount
@@ -44,9 +21,9 @@ describe('Signup Controller', () => {
   let _authenticationStub: Authentication
 
   beforeEach(() => {
-    _addAccountStub = new AddAccountStub()
-    _validationStub = new ValidationStub()
-    _authenticationStub = new AuthenticationStub()
+    _addAccountStub = mockAddAccount()
+    _validationStub = mockValidation()
+    _authenticationStub = mockAuthentication()
     _sut = new SignUpController(_addAccountStub, _validationStub, _authenticationStub)
   })
 

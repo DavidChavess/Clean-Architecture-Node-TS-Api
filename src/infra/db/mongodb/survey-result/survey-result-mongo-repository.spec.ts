@@ -2,6 +2,7 @@ import { Collection } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import MockDate from 'mockdate'
+import { mockAddSurveyParams } from '@/domain/test'
 
 describe('Survey Result Mongo Repository', () => {
   let surveyCollection: Collection
@@ -38,14 +39,7 @@ describe('Survey Result Mongo Repository', () => {
   }
 
   const makeSurvey = async (): Promise<any> => {
-    const survey = {
-      question: 'any_question',
-      answers: [{
-        image: 'any_image',
-        answer: 'any_answer'
-      }],
-      date: new Date()
-    }
+    const survey = mockAddSurveyParams()
     await surveyCollection.insertOne(survey)
     return survey
   }

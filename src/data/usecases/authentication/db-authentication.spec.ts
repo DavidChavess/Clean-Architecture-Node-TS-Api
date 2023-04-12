@@ -1,52 +1,19 @@
 import { DbAuthentication } from './db-authentication'
-import {
-  AccountModel,
-  LoadAccountByEmailRepository,
-  HashComparer,
-  Encrypter,
-  UpdateAccessTokenRepository
-} from './db-authentication-protocols'
-
-class LoadAccountByEmailRepositoryStub implements LoadAccountByEmailRepository {
-  async loadByEmail (email: string): Promise<AccountModel | null> {
-    return {
-      id: 'any_id',
-      email: 'any_email@mail.com',
-      name: 'any_name',
-      password: 'hashed_password'
-    }
-  }
-}
-
-class HashComparerStub implements HashComparer {
-  async compare (value: string, hash: string): Promise<boolean> {
-    return true
-  }
-}
-
-class EncrypterStub implements Encrypter {
-  async encrypt (value: string): Promise<string> {
-    return 'any_token'
-  }
-}
-
-class UpdateAccessTokenRepositoryStub implements UpdateAccessTokenRepository {
-  async updateAccessToken (id: string, token: string): Promise<void> {
-  }
-}
+import { LoadAccountByEmailRepository, HashComparer, Encrypter, UpdateAccessTokenRepository } from './db-authentication-protocols'
+import { mockEncrypter, mockHashComparer, mockLoadAccountByEmailRepository, mockUpdateAccessTokenRepository } from '@/data/test'
 
 describe('DbAuthentication', () => {
   let _sut: DbAuthentication
-  let _hashComparerStub: HashComparerStub
-  let _loadAccountByEmailRepositoryStub: LoadAccountByEmailRepositoryStub
-  let _encrypterStub: EncrypterStub
-  let _updateAccessTokenStub: UpdateAccessTokenRepositoryStub
+  let _hashComparerStub: HashComparer
+  let _loadAccountByEmailRepositoryStub: LoadAccountByEmailRepository
+  let _encrypterStub: Encrypter
+  let _updateAccessTokenStub: UpdateAccessTokenRepository
 
   beforeEach(() => {
-    _loadAccountByEmailRepositoryStub = new LoadAccountByEmailRepositoryStub()
-    _hashComparerStub = new HashComparerStub()
-    _encrypterStub = new EncrypterStub()
-    _updateAccessTokenStub = new UpdateAccessTokenRepositoryStub()
+    _loadAccountByEmailRepositoryStub = mockLoadAccountByEmailRepository()
+    _hashComparerStub = mockHashComparer()
+    _encrypterStub = mockEncrypter()
+    _updateAccessTokenStub = mockUpdateAccessTokenRepository()
     _sut = new DbAuthentication(_loadAccountByEmailRepositoryStub, _hashComparerStub, _encrypterStub, _updateAccessTokenStub)
   })
 
@@ -87,9 +54,7 @@ describe('DbAuthentication', () => {
   })
 
   test('Should throw if Encrypter throws', async () => {
-    jest.spyOn(_encrypterStub, 'encrypt').mockImplementationOnce(() => {
-      throw new Error()
-    })
+    jest.spyOn(_encrypterStub, 'encrypt').mockRejectedValueOnce(new Error())
     await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
       .rejects.toThrow()
   })
@@ -106,9 +71,7 @@ describe('DbAuthentication', () => {
   })
 
   test('Should throw if UpdateAcessTokenRepository throws', async () => {
-    jest.spyOn(_updateAccessTokenStub, 'updateAccessToken').mockImplementationOnce(() => {
-      throw new Error()
-    })
+    jest.spyOn(_updateAccessTokenStub, 'updateAccessToken').mockRejectedValueOnce(new Error())
     await expect(_sut.auth({ email: 'any_email@mail.com', password: 'any_password' }))
       .rejects.toThrow()
   })

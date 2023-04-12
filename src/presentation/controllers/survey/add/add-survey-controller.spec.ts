@@ -1,40 +1,24 @@
-import { AddSurvey, AddSurveyParams, Validation, HttpRequest } from './add-survey-protocols'
+import { Validation, HttpRequest, AddSurvey } from './add-survey-protocols'
 import { AddSurveyController } from './add-survey-controller'
 import { MissingParamError } from '@/presentation/errors'
 import { badRequest, noContent, serverError } from '@/presentation/helpers/http/http-helper'
 import MockDate from 'mockdate'
-
-class ValidationStub implements Validation {
-  validate (input: string): Error | null {
-    return null
-  }
-}
-
-class AddSurveyStub implements AddSurvey {
-  async add (data: AddSurveyParams): Promise<void> {
-    return Promise.resolve()
-  }
-}
+import { mockAddSurveyParams } from '@/domain/test'
+import { mockValidation } from '@/validation/test'
+import { mockAddSurvey } from '@/presentation/test'
 
 const makeHttpRequest = (): HttpRequest => ({
-  body: {
-    question: 'any_question',
-    answers: [{
-      image: 'any_image',
-      answer: 'any_answer'
-    }],
-    date: new Date()
-  }
+  body: mockAddSurveyParams()
 })
 
 describe('AddSurvey Controller', () => {
   let _sut: AddSurveyController
-  let _validationStub: ValidationStub
-  let _addSurveyStub: AddSurveyStub
+  let _validationStub: Validation
+  let _addSurveyStub: AddSurvey
 
   beforeEach(() => {
-    _validationStub = new ValidationStub()
-    _addSurveyStub = new AddSurveyStub()
+    _validationStub = mockValidation()
+    _addSurveyStub = mockAddSurvey()
     _sut = new AddSurveyController(_validationStub, _addSurveyStub)
   })
 

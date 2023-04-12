@@ -2,15 +2,7 @@ import { Collection } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { SurveyMongoRepository } from './survey-mongo-repository'
 import MockDate from 'mockdate'
-
-const makeAddSurveyModel = (): any => ({
-  question: 'any_question',
-  answers: [{
-    image: 'any_image',
-    answer: 'any_answer'
-  }],
-  date: new Date()
-})
+import { mockAddSurveyParams } from '@/domain/test'
 
 describe('Survey Mongo Repository', () => {
   let surveyCollection: Collection
@@ -37,7 +29,7 @@ describe('Survey Mongo Repository', () => {
   describe('add()', () => {
     test('Should add a new survey on add success', async () => {
       const sut = makeSut()
-      await sut.add(makeAddSurveyModel())
+      await sut.add(mockAddSurveyParams())
       const response = await surveyCollection.findOne({ question: 'any_question' })
       expect(response).toBeTruthy()
     })
@@ -81,7 +73,7 @@ describe('Survey Mongo Repository', () => {
 
   describe('loadById()', () => {
     test('Should return a survey by id with success', async () => {
-      const surveyModel: any = makeAddSurveyModel()
+      const surveyModel: any = mockAddSurveyParams()
       await surveyCollection.insertOne(surveyModel)
 
       const sut = makeSut()

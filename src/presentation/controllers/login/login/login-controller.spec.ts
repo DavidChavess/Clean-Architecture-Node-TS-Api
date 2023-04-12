@@ -1,28 +1,18 @@
 import { LoginController } from './login-controller'
-import { HttpRequest, Authentication, Validation, AuthenticationParams } from './login-controller-protocols'
+import { HttpRequest, Authentication, Validation } from './login-controller-protocols'
 import { MissingParamError } from '@/presentation/errors'
 import { badRequest, serverError, unauthorized, ok } from '@/presentation/helpers/http/http-helper'
-
-class AuthenticationStub implements Authentication {
-  async auth (authenticationParams: AuthenticationParams): Promise<string> {
-    return 'any_token'
-  }
-}
-
-class ValidationStub implements Validation {
-  validate (input: string): Error {
-    return null as unknown as Error
-  }
-}
+import { mockAuthentication } from '@/presentation/test'
+import { mockValidation } from '@/validation/test'
 
 describe('Login Controller', () => {
   let _sut: LoginController
-  let _authenticationStub: AuthenticationStub
+  let _authenticationStub: Authentication
   let _validationStub: Validation
 
   beforeEach(() => {
-    _authenticationStub = new AuthenticationStub()
-    _validationStub = new ValidationStub()
+    _authenticationStub = mockAuthentication()
+    _validationStub = mockValidation()
     _sut = new LoginController(_authenticationStub, _validationStub)
   })
 

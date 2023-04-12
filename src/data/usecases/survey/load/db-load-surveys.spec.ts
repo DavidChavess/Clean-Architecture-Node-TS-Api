@@ -1,31 +1,12 @@
 import { DbLoadSurveys } from './db-load-surveys'
-import { LoadSurveysRepository, SurveyModel } from './db-load-surveys-protocols'
+import { LoadSurveysRepository } from './db-load-surveys-protocols'
 import MockDate from 'mockdate'
-
-const makeSurveys = (): SurveyModel[] => ([
-  {
-    id: '1',
-    question: 'question 1',
-    date: new Date(),
-    answers: [{ answer: 'any_answer' }]
-  },
-  {
-    id: '2',
-    question: 'question 2',
-    date: new Date(),
-    answers: [{ answer: 'any_answer' }]
-  }
-])
-
-class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-  async loadAll (): Promise<SurveyModel[]> {
-    return makeSurveys()
-  }
-}
+import { mockSurveyModels } from '@/domain/test'
+import { mockLoadSurveysRepository } from '@/data/test'
 
 describe('DbLoadSurveys Usecase', () => {
   let _sut: DbLoadSurveys
-  let _loadSurveysRepositoryStub: LoadSurveysRepositoryStub
+  let _loadSurveysRepositoryStub: LoadSurveysRepository
 
   beforeAll(async () => {
     MockDate.set(new Date())
@@ -36,7 +17,7 @@ describe('DbLoadSurveys Usecase', () => {
   })
 
   beforeEach(() => {
-    _loadSurveysRepositoryStub = new LoadSurveysRepositoryStub()
+    _loadSurveysRepositoryStub = mockLoadSurveysRepository()
     _sut = new DbLoadSurveys(_loadSurveysRepositoryStub)
   })
 
@@ -48,7 +29,7 @@ describe('DbLoadSurveys Usecase', () => {
 
   test('Should return a list of Surveys on success', async () => {
     const surveys = await _sut.load()
-    expect(surveys).toEqual(makeSurveys())
+    expect(surveys).toEqual(mockSurveyModels())
   })
 
   test('Should throws if LoadSurveysRepository throw', async () => {

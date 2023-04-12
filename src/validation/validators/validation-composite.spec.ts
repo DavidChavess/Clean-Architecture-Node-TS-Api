@@ -1,19 +1,14 @@
 import { MissingParamError } from '@/presentation/errors'
-import { Validation } from '@/presentation/protocols/validation'
+import { Validation } from '@/presentation/protocols'
 import { ValidationComposite } from './validation-composite'
-
-class ValidationStub implements Validation {
-  validate (input: any): Error | null {
-    return null
-  }
-}
+import { mockValidation } from '@/validation/test'
 
 describe('Validation Composite', () => {
-  let _validationStubs: ValidationStub[]
+  let _validationStubs: Validation[]
   let _sut: ValidationComposite
 
   beforeEach(() => {
-    _validationStubs = [new ValidationStub(), new ValidationStub()]
+    _validationStubs = [mockValidation(), mockValidation()]
     _sut = new ValidationComposite(_validationStubs)
   })
 
