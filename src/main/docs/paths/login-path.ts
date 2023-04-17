@@ -18,20 +18,19 @@ export const loginPaths = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/account'
+              $ref: '#/schemas/accessToken'
             }
           }
         }
       },
       400: {
-        description: 'Bad-request',
-        content: {
-          'application/json': {
-            schema: {
-              $ref: '#/schemas/error'
-            }
-          }
-        }
+        $ref: '#/components/badRequest'
+      },
+      401: {
+        $ref: '#/components/unauthorized'
+      },
+      500: {
+        $ref: '#/components/serverError'
       }
     }
   }

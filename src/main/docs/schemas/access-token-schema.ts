@@ -1,4 +1,4 @@
-export const accountSchema = {
+export const accessTokenSchema = {
   type: 'object',
   properties: {
     accessToken: {
