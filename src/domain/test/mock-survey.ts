@@ -3,10 +3,16 @@ import { SurveyModel } from '../models/survey-model'
 
 export const mockAddSurveyParams = (): AddSurveyParams => ({
   question: 'any_question',
-  answers: [{
-    image: 'any_image',
-    answer: 'any_answer'
-  }],
+  answers: [
+    {
+      image: 'any_image',
+      answer: 'any_answer'
+    },
+    {
+      image: 'any_image_2',
+      answer: 'any_answer_2'
+    }
+  ],
   date: new Date()
 })
 
