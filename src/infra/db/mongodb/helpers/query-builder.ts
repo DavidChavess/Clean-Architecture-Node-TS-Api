@@ -1,39 +1,42 @@
 export class QueryBuilder {
-  private readonly query: any[] = []
+  private readonly query: object[] = []
 
-  match (matcher: any): QueryBuilder {
-    return this.execute('match', matcher)
-  }
-
-  group (group: any): QueryBuilder {
-    return this.execute('group', group)
-  }
-
-  unwind (obj: any): QueryBuilder {
-    return this.execute('unwind', obj)
-  }
-
-  lookup (obj: any): QueryBuilder {
-    return this.execute('lookup', obj)
-  }
-
-  addFields (fields: any): QueryBuilder {
-    return this.execute('addFields', fields)
-  }
-
-  project (structure: any): QueryBuilder {
-    return this.execute('project', structure)
-  }
-
-  execute (alias: string, config: any): QueryBuilder {
-    const action = {
-      [`$${alias}`]: config
-    }
-    this.query.push(action)
+  match (matcher: object): QueryBuilder {
+    this.query.push({ $match: matcher })
     return this
   }
 
-  toQuery (): any[] {
+  group (group: object): QueryBuilder {
+    this.query.push({ $group: group })
+    return this
+  }
+
+  unwind (obj: object): QueryBuilder {
+    this.query.push({ $unwind: obj })
+    return this
+  }
+
+  lookup (obj: object): QueryBuilder {
+    this.query.push({ $lookup: obj })
+    return this
+  }
+
+  addFields (fields: object): QueryBuilder {
+    this.query.push({ $addFields: fields })
+    return this
+  }
+
+  project (structure: object): QueryBuilder {
+    this.query.push({ $project: structure })
+    return this
+  }
+
+  sort (data: object): QueryBuilder {
+    this.query.push({ $sort: data })
+    return this
+  }
+
+  toQuery (): object[] {
     return this.query
   }
 }
