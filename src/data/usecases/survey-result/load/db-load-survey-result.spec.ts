@@ -2,11 +2,19 @@ import { mockLoadSurveyResultRepository } from '@/data/test'
 import { DbLoadSurveyResult } from './db-load-survey-result'
 import { LoadSurveyResultRepository } from './db-load-survey-result-protocols'
 import { mockSurveyResultModel } from '@/domain/test'
+import MockDate from 'mockdate'
 
 describe('DbLoadSurveyResult Usecase', () => {
   let _loadSurveyResultRepositoryStub: LoadSurveyResultRepository
   let _sut: DbLoadSurveyResult
 
+  beforeAll(async () => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(async () => {
+    MockDate.reset()
+  })
   beforeEach(() => {
     _loadSurveyResultRepositoryStub = mockLoadSurveyResultRepository()
     _sut = new DbLoadSurveyResult(_loadSurveyResultRepositoryStub)
