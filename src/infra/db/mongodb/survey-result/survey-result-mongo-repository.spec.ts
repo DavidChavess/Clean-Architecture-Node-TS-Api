@@ -46,50 +46,41 @@ describe('Survey Result Mongo Repository', () => {
 
   describe('save()', () => {
     test('Should add a survey result if its new', async () => {
-      const account = await makeAccount()
-      const survey = await makeSurvey()
       const sut = makeSut()
-      const surveyResult = await sut.save({
-        accountId: account._id,
-        surveyId: survey._id,
-        answer: survey.answers[0].answer,
+      await sut.save({
+        accountId: 'account_id',
+        surveyId: 'any_survey_id',
+        answer: 'updated_answer',
         date: new Date()
       })
-      expect(surveyResult).toBeTruthy()
-      expect(surveyResult.answers[0].answer).toBe(survey.answers[0].answer)
-      expect(surveyResult.answers[0].count).toBe(1)
-      expect(surveyResult.answers[0].percent).toBe(100)
-      expect(surveyResult.answers[1].count).toBe(0)
-      expect(surveyResult.answers[1].percent).toBe(0)
+      const count = await surveyResultsCollection.countDocuments()
+      expect(count).toBe(1)
     })
 
     test('Should update survey result if its not new', async () => {
-      const account = await makeAccount()
-      const survey = await makeSurvey()
+      const sut = makeSut()
       const surveyResult = {
-        accountId: account._id,
-        surveyId: survey._id,
-        answer: survey.answers[0].answer,
+        accountId: 'account_id',
+        surveyId: 'any_survey_id',
+        answer: 'any_answer',
         date: new Date()
       }
       await surveyResultsCollection.insertOne(surveyResult)
-
-      expect(surveyResult).toBeTruthy()
-
-      const sut = makeSut()
-      const surveyResultResponse = await sut.save({
-        accountId: account._id,
-        surveyId: survey._id,
-        answer: survey.answers[1].answer,
+      await sut.save({
+        accountId: 'account_id',
+        surveyId: 'any_survey_id',
+        answer: 'updated_answer',
         date: new Date()
       })
 
+      const surveyResultResponse = await surveyResultsCollection.find({
+        accountId: surveyResult.accountId,
+        surveyId: surveyResult.surveyId
+      }).toArray()
+
       expect(surveyResultResponse).toBeTruthy()
-      expect(surveyResultResponse.answers[0].answer).toBe(survey.answers[1].answer)
-      expect(surveyResultResponse.answers[0].count).toBe(1)
-      expect(surveyResultResponse.answers[0].percent).toBe(100)
-      expect(surveyResultResponse.answers[1].count).toBe(0)
-      expect(surveyResultResponse.answers[1].percent).toBe(0)
+      expect(surveyResultResponse.length).toBe(1)
+      expect(surveyResultResponse[0].answer).toBe('updated_answer')
     })
   })
 

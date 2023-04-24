@@ -3,7 +3,7 @@ import { SaveSurveyResultParams, SaveSurveyResultRepository, SurveyResultModel }
 import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/load-survey-result-repository'
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
-  async save (data: SaveSurveyResultParams): Promise<SurveyResultModel> {
+  async save (data: SaveSurveyResultParams): Promise<void> {
     const surveyResultsCollection = await MongoHelper.getCollection('surveyResults')
     await surveyResultsCollection.findOneAndUpdate(
       {
@@ -20,7 +20,6 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
         upsert: true
       }
     )
-    return this.loadBySurveyId(data.surveyId)
   }
 
   async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
