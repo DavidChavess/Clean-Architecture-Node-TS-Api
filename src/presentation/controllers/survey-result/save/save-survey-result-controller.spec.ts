@@ -1,10 +1,10 @@
 import { HttpRequest, LoadSurveyById, SaveSurveyResult } from './save-survey-result-controller-protocols'
 import { SaveSurveyResultController } from './save-survey-result-controller'
-import { forbidden, serverError, unauthorized, ok } from '../survey/load/load-surveys-protocols'
+import { forbidden, serverError, unauthorized, ok } from '@/presentation/helpers/http/http-helper'
 import { InvalidParamError } from '@/presentation/errors'
 import { mockLoadSurveyById, mockSaveSurveyResult } from '@/presentation/test'
-import MockDate from 'mockdate'
 import { mockSaveSurveyResultParams, mockSurveyResultModel } from '@/domain/test'
+import MockDate from 'mockdate'
 
 const makeFakeRequest = (): HttpRequest => ({
   params: {
