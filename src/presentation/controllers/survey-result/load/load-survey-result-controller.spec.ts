@@ -38,4 +38,10 @@ describe('LoadSurveyResult Controller', () => {
     await _sut.handle({ params: { surveyId: 'any_survey_id' } })
     expect(loadSpy).toHaveBeenCalledWith('any_survey_id')
   })
+
+  test('Should return 500 if LoadSurveyResult throws', async () => {
+    jest.spyOn(_loadSurveyResultStub, 'load').mockRejectedValueOnce(new Error())
+    const httpResponse = await _sut.handle({ params: { surveyId: 'any_survey_id' } })
+    expect(httpResponse).toEqual(serverError(new Error()))
+  })
 })
