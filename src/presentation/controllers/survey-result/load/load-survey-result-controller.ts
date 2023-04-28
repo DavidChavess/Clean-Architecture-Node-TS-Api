@@ -1,6 +1,5 @@
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { Controller, HttpRequest, HttpResponse, LoadSurveyById } from './load-survey-result-controller-protocols'
 import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-helper'
-import { LoadSurveyById } from '@/domain/usecases/survey/load-survey-by-id'
 import { InvalidParamError } from '@/presentation/errors'
 
 export class LoadSurveyResultController implements Controller {

@@ -1,6 +1,6 @@
 import { mockLoadSurveyById } from '@/presentation/test'
 import { LoadSurveyResultController } from './load-survey-result-controller'
-import { LoadSurveyById } from '@/data/usecases/survey/load-survey-by-id/db-load-survey-by-id-protocols'
+import { LoadSurveyById } from './load-survey-result-controller-protocols'
 import { forbidden, serverError } from '@/presentation/helpers/http/http-helper'
 import { InvalidParamError } from '@/presentation/errors'
 
