@@ -1,3 +1,5 @@
-export * from './access-token-schema'
-export * from './error-schema'
+export * from './access-token-model-schema'
+export * from './error-model-schema'
 export * from './login-params-schema'
+export * from './survey-result-params-schema'
+export * from './survey-result-model-schema'

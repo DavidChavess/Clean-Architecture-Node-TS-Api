@@ -1,12 +1,12 @@
-import { loginPaths } from './paths/login-path'
-import { accessTokenSchema, errorSchema, loginParamsSchema } from './schemas'
+import { loginPaths, surveyResultPaths } from './paths'
+import { accessTokenModelSchema, errorModelSchema, loginParamsSchema, surveyResultModelSchema, surveyResultParamsSchema } from './schemas'
 import { badRequestComponent, unauthorizedErrorComponent, serverErrorComponent } from './components'
 
 export default {
   openapi: '3.0.0',
   info: {
     title: 'Clean Node API',
-    description: 'API para realizar enquetes entre programadores K23',
+    description: 'API para realizar enquetes entre programadores',
     version: '1.0.0'
   },
   servers: [{
@@ -16,12 +16,15 @@ export default {
     name: 'Login'
   }],
   paths: {
-    '/login': loginPaths
+    '/login': loginPaths,
+    '/surveys/{id}/results': surveyResultPaths
   },
   schemas: {
-    accessToken: accessTokenSchema,
+    accessToken: accessTokenModelSchema,
     loginParams: loginParamsSchema,
-    error: errorSchema
+    error: errorModelSchema,
+    surveyResultParamsSchema: surveyResultParamsSchema,
+    surveyResultModelSchema: surveyResultModelSchema
   },
   components: {
     badRequest: badRequestComponent,

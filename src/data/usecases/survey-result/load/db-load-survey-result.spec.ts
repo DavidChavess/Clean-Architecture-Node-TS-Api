@@ -1,9 +1,8 @@
 import { DbLoadSurveyResult } from './db-load-survey-result'
-import { LoadSurveyResultRepository, LoadSurveyByIdRepository, SurveyResultModel } from './db-load-survey-result-protocols'
+import { LoadSurveyResultRepository, LoadSurveyByIdRepository } from './db-load-survey-result-protocols'
 import { mockSurveyResultModel } from '@/domain/test'
 import { mockLoadSurveyByIdRepository, mockLoadSurveyResultRepository } from '@/data/test'
 import MockDate from 'mockdate'
-import { mockLoadSurveyById } from '@/presentation/test'
 
 describe('DbLoadSurveyResult Usecase', () => {
   let _loadSurveyResultRepositoryStub: LoadSurveyResultRepository
