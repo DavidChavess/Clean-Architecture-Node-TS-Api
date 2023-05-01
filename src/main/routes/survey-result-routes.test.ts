@@ -47,28 +47,34 @@ describe('SurveyResult - Routes', () => {
         })
         .expect(403)
     })
+
+    test('Should return 200 on save survey result with accessToken', async () => {
+      const survey: any = {
+        question: 'any_question',
+        answers: [
+          {
+            image: 'https://any_image-1.com',
+            answer: 'any_answer'
+          }
+        ],
+        date: new Date()
+      }
+      await surveyCollection.insertOne(survey)
+      await request(app)
+        .put(`/api/surveys/${survey._id}/results`)
+        .set('x-access-token', await makeAccessToken())
+        .send({
+          answer: 'any_answer'
+        })
+        .expect(200)
+    })
   })
 
-  test('Should return 200 on save survey result with accessToken', async () => {
-    const survey: any = {
-      question: 'any_question',
-      answers: [
-        {
-          image: 'https://any_image-1.com',
-          answer: 'any_answer'
-        }
-      ],
-      date: new Date()
-    }
-
-    await surveyCollection.insertOne(survey)
-
-    await request(app)
-      .put(`/api/surveys/${survey._id}/results`)
-      .set('x-access-token', await makeAccessToken())
-      .send({
-        answer: 'any_answer'
-      })
-      .expect(200)
+  describe('GET /surveys/:surveyId/results', () => {
+    test('Should return 403 on load survey result without accessToken', async () => {
+      await request(app)
+        .get('/api/surveys/any_id/results')
+        .expect(403)
+    })
   })
 })
