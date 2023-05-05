@@ -1,4 +1,4 @@
-import { Collection } from 'mongodb'
+import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import MockDate from 'mockdate'
@@ -37,19 +37,22 @@ describe('Survey Result Mongo Repository', () => {
 
   beforeEach(async () => {
     surveyCollection = await MongoHelper.getCollection('surveys')
-    await surveyCollection.deleteMany({})
     surveyResultsCollection = await MongoHelper.getCollection('surveyResults')
-    await surveyResultsCollection.deleteMany({})
     accountCollection = await MongoHelper.getCollection('accounts')
-    await accountCollection.deleteMany({})
+
+    await Promise.all([
+      surveyResultsCollection.deleteMany({}),
+      surveyCollection.deleteMany({}),
+      accountCollection.deleteMany({})
+    ])
   })
 
   describe('save()', () => {
     test('Should add a survey result if its new', async () => {
       const sut = makeSut()
       await sut.save({
-        accountId: 'account_id',
-        surveyId: 'any_survey_id',
+        accountId: '643ee19a8b7d94780eef6ce2',
+        surveyId: '643ee19a8b7d94780eef6ce2',
         answer: 'updated_answer',
         date: new Date()
       })
@@ -60,15 +63,16 @@ describe('Survey Result Mongo Repository', () => {
     test('Should update survey result if its not new', async () => {
       const sut = makeSut()
       const surveyResult = {
-        accountId: 'account_id',
-        surveyId: 'any_survey_id',
+        accountId: new ObjectId('643ee19a8b7d94780eef6ce2'),
+        surveyId: new ObjectId('643ee19a8b7d94780eef6ce2'),
         answer: 'any_answer',
         date: new Date()
       }
       await surveyResultsCollection.insertOne(surveyResult)
+
       await sut.save({
-        accountId: 'account_id',
-        surveyId: 'any_survey_id',
+        accountId: surveyResult.accountId.toString(),
+        surveyId: surveyResult.surveyId.toString(),
         answer: 'updated_answer',
         date: new Date()
       })

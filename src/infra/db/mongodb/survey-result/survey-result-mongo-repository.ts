@@ -1,14 +1,15 @@
 import { MongoHelper, QueryBuilder } from '@/infra/db/mongodb/helpers'
 import { SaveSurveyResultParams, SaveSurveyResultRepository, SurveyResultModel } from './survey-result-mongo-repository-protocols'
 import { LoadSurveyResultRepository } from '@/data/protocols/db/survey-result/load-survey-result-repository'
+import { ObjectId } from 'mongodb'
 
 export class SurveyResultMongoRepository implements SaveSurveyResultRepository, LoadSurveyResultRepository {
   async save (data: SaveSurveyResultParams): Promise<void> {
     const surveyResultsCollection = await MongoHelper.getCollection('surveyResults')
     await surveyResultsCollection.findOneAndUpdate(
       {
-        accountId: data.accountId,
-        surveyId: data.surveyId
+        accountId: new ObjectId(data.accountId),
+        surveyId: new ObjectId(data.surveyId)
       },
       {
         $set: {
@@ -19,14 +20,14 @@ export class SurveyResultMongoRepository implements SaveSurveyResultRepository, 
       {
         upsert: true
       }
-    )
+    ).then(console.log)
   }
 
   async loadBySurveyId (surveyId: string): Promise<SurveyResultModel> {
     const surveyResultsCollection = await MongoHelper.getCollection('surveyResults')
     const query = new QueryBuilder()
       .match({
-        surveyId
+        surveyId: new ObjectId(surveyId)
       })
       .group({
         _id: 0,
