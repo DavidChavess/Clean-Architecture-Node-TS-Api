@@ -1,6 +1,6 @@
-import { loginPaths, surveyResultPaths } from './paths'
-import { accessTokenModelSchema, errorModelSchema, loginParamsSchema, surveyResultModelSchema, surveyResultParamsSchema } from './schemas'
-import { badRequestComponent, unauthorizedErrorComponent, serverErrorComponent } from './components'
+import components from './components'
+import paths from './paths'
+import schemas from './schemas'
 
 export default {
   openapi: '3.0.0',
@@ -15,20 +15,7 @@ export default {
   tags: [{
     name: 'Login'
   }],
-  paths: {
-    '/login': loginPaths,
-    '/surveys/{id}/results': surveyResultPaths
-  },
-  schemas: {
-    accessToken: accessTokenModelSchema,
-    loginParams: loginParamsSchema,
-    error: errorModelSchema,
-    surveyResultParamsSchema: surveyResultParamsSchema,
-    surveyResultModelSchema: surveyResultModelSchema
-  },
-  components: {
-    badRequest: badRequestComponent,
-    unauthorized: unauthorizedErrorComponent,
-    serverError: serverErrorComponent
-  }
+  paths,
+  schemas,
+  components
 }

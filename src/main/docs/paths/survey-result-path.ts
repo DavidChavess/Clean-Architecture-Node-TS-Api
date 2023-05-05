@@ -27,7 +27,7 @@ export const surveyResultPaths = {
     },
     responses: {
       200: {
-        description: 'api',
+        description: 'Sucesso',
         content: {
           'application/json': {
             schema: {
