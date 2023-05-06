@@ -4,6 +4,7 @@ import { forbidden, ok, serverError } from '@/presentation/helpers/http/http-hel
 import { InvalidParamError } from '@/presentation/errors'
 import { mockLoadSurveyById, mockLoadSurveyResult } from '@/presentation/test'
 import { mockSurveyResultModel } from '@/domain/test'
+import MockDate from 'mockdate'
 
 describe('LoadSurveyResult Controller', () => {
   let _loadSurveyByIdStub: LoadSurveyById
@@ -14,6 +15,14 @@ describe('LoadSurveyResult Controller', () => {
     _loadSurveyByIdStub = mockLoadSurveyById()
     _loadSurveyResultStub = mockLoadSurveyResult()
     _sut = new LoadSurveyResultController(_loadSurveyByIdStub, _loadSurveyResultStub)
+  })
+
+  beforeAll(() => {
+    MockDate.set(new Date())
+  })
+
+  afterAll(() => {
+    MockDate.set(new Date())
   })
 
   test('Should call LoadSurveyById with correct survey id', async () => {
