@@ -1,5 +1,5 @@
 import { apiKeyAuthSchema } from './schemas/'
-import { badRequestComponent, unauthorizedErrorComponent, serverErrorComponent } from './components/'
+import { badRequestComponent, unauthorizedErrorComponent, serverErrorComponent, forbiddenErrorComponent } from './components/'
 
 export default {
   securitySchemes: {
@@ -7,5 +7,6 @@ export default {
   },
   badRequest: badRequestComponent,
   unauthorized: unauthorizedErrorComponent,
+  forbidden: forbiddenErrorComponent,
   serverError: serverErrorComponent
 }
