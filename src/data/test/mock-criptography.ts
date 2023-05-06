@@ -3,13 +3,14 @@ import { Decrypter } from '@/data/protocols/criptography/decrypter'
 import { Encrypter } from '@/data/protocols/criptography/encrypter'
 import { HashComparer } from '@/data/protocols/criptography/hash-comparer'
 
-export const mockHasher = (): Hasher => {
-  class HasherStub implements Hasher {
-    async hash (valeu: string): Promise<string> {
-      return 'hashed_password'
-    }
+export class HasherSpy implements Hasher {
+  result: string = 'hashed_password'
+  plainText: string
+
+  async hash (plainText: string): Promise<string> {
+    this.plainText = plainText
+    return this.result
   }
-  return new HasherStub()
 }
 
 export const mockDecrypter = (): Decrypter => {
