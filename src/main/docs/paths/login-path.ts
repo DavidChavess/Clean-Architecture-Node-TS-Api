@@ -7,7 +7,7 @@ export const loginPaths = {
       content: {
         'application/json': {
           schema: {
-            $ref: '#/schemas/loginParams'
+            $ref: '#/schemas/loginParamsSchema'
           }
         }
       }
@@ -18,19 +18,19 @@ export const loginPaths = {
         content: {
           'application/json': {
             schema: {
-              $ref: '#/schemas/accessToken'
+              $ref: '#/schemas/accountModelSchema'
             }
           }
         }
       },
-      400: {
-        $ref: '#/components/badRequest'
-      },
       401: {
-        $ref: '#/components/unauthorized'
+        $ref: '#/components/unauthorizedErrorComponent'
+      },
+      403: {
+        $ref: '#/components/forbiddenErrorComponent'
       },
       500: {
-        $ref: '#/components/serverError'
+        $ref: '#/components/serverErrorComponent'
       }
     }
   }

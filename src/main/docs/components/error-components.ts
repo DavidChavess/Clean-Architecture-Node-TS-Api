@@ -3,13 +3,13 @@ const errorComponent = (description: string): any => ({
   content: {
     'application/json': {
       schema: {
-        $ref: '#/schemas/error'
+        $ref: '#/schemas/errorModelSchema'
       }
     }
   }
 })
 
-export const badRequestComponent = errorComponent('Requisição inválida')
+export const badRequestErrorComponent = errorComponent('Requisição inválida')
 export const forbiddenErrorComponent = errorComponent('Acesso negado')
 export const serverErrorComponent = errorComponent('Problemas no servidor')
 export const unauthorizedErrorComponent = errorComponent('Credenciais inválidas')

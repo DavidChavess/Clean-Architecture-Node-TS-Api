@@ -37,16 +37,16 @@ export const surveyResultPaths = {
         }
       },
       400: {
-        $ref: '#/components/badRequest'
+        $ref: '#/components/badRequestErrorComponent'
       },
       401: {
-        $ref: '#/components/unauthorized'
+        $ref: '#/components/unauthorizedErrorComponent'
       },
       403: {
-        $ref: '#/components/forbidden'
+        $ref: '#/components/forbiddenErrorComponent'
       },
       500: {
-        $ref: '#/components/serverError'
+        $ref: '#/components/serverErrorComponent'
       }
     }
   },
@@ -78,13 +78,13 @@ export const surveyResultPaths = {
         }
       },
       401: {
-        $ref: '#/components/unauthorized'
+        $ref: '#/components/unauthorizedErrorComponent'
       },
       403: {
-        $ref: '#/components/forbidden'
+        $ref: '#/components/forbiddenErrorComponent'
       },
       500: {
-        $ref: '#/components/serverError'
+        $ref: '#/components/serverErrorComponent'
       }
     }
   }

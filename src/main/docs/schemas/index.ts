@@ -1,4 +1,4 @@
-export * from './access-token-model-schema'
+export * from './account-model-schema'
 export * from './error-model-schema'
 export * from './login-params-schema'
 export * from './survey-result-params-schema'
