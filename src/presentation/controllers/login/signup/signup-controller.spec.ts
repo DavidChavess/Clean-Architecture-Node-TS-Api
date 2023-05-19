@@ -52,7 +52,7 @@ describe('Signup Controller', () => {
 
   test('Should return 201 if valid data is provided', async () => {
     const httpResponse = await _sut.handle(makeHttpRequest())
-    expect(httpResponse).toEqual(created({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(created({ name: 'any_name', accessToken: 'any_token' }))
   })
 
   test('Should return 400 if validation returns an erro', async () => {

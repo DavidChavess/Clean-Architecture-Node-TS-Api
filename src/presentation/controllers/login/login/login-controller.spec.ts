@@ -30,7 +30,7 @@ describe('Login Controller', () => {
   })
 
   test('Should return 401 if invalid credentials are provided', async () => {
-    jest.spyOn(_authenticationStub, 'auth').mockResolvedValueOnce('')
+    jest.spyOn(_authenticationStub, 'auth').mockResolvedValueOnce(null)
     const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(unauthorized())
   })
@@ -55,6 +55,6 @@ describe('Login Controller', () => {
 
   test('Should return 200 if valid credentials are provided', async () => {
     const httpResponse = await _sut.handle(makeHttpRequest())
-    expect(httpResponse).toEqual(ok({ accessToken: 'any_token' }))
+    expect(httpResponse).toEqual(ok({ name: 'any_name', accessToken: 'any_token' }))
   })
 })

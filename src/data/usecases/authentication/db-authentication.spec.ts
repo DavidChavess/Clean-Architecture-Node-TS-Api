@@ -59,9 +59,9 @@ describe('DbAuthentication', () => {
       .rejects.toThrow()
   })
 
-  test('Should return a token on success', async () => {
+  test('Should return an AuthenticationModel on success', async () => {
     const response = await _sut.auth({ email: 'any_email@mail.com', password: 'any_password' })
-    expect(response).toBe('any_token')
+    expect(response).toEqual({ name: 'any_name', accessToken: 'any_token' })
   })
 
   test('Should call UpdateAcessTokenRepository with correct values', async () => {
