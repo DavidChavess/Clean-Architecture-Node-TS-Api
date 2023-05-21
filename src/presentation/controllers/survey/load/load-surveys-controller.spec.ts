@@ -1,8 +1,10 @@
 import { LoadSurveysController } from './load-surveys-controller'
-import { LoadSurveys, noContent, ok, serverError } from './load-surveys-protocols'
+import { HttpRequest, LoadSurveys, noContent, ok, serverError, unauthorized } from './load-surveys-protocols'
 import MockDate from 'mockdate'
 import { mockLoadSurvey } from '@/presentation/test'
 import { mockSurveyModels } from '@/domain/test'
+
+const makeHttpRequest = (): HttpRequest => ({ accountId: 'any_account_id' })
 
 describe('LoadSurvey Controller', () => {
   let _loadSurveysStub: LoadSurveys
@@ -23,24 +25,29 @@ describe('LoadSurvey Controller', () => {
 
   test('Should call LoadSurveys with correct values', async () => {
     const loadSurveysSpy = jest.spyOn(_loadSurveysStub, 'load')
-    await _sut.handle({})
-    expect(loadSurveysSpy).toHaveBeenCalled()
+    await _sut.handle(makeHttpRequest())
+    expect(loadSurveysSpy).toHaveBeenCalledWith('any_account_id')
   })
 
   test('Should return 200 on LoadSurveys on success', async () => {
-    const httpResponse = await _sut.handle({})
+    const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(ok(mockSurveyModels()))
   })
 
   test('Should return 204 if LoadSurveys returns empty', async () => {
     jest.spyOn(_loadSurveysStub, 'load').mockResolvedValueOnce([])
-    const httpResponse = await _sut.handle({})
+    const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(noContent())
+  })
+
+  test('Should return 401 if accountId is no provided', async () => {
+    const httpResponse = await _sut.handle({})
+    expect(httpResponse).toEqual(unauthorized())
   })
 
   test('Should return 500 if LoadSurveys throws', async () => {
     jest.spyOn(_loadSurveysStub, 'load').mockRejectedValueOnce(new Error('any_error'))
-    const httpResponse = await _sut.handle({})
+    const httpResponse = await _sut.handle(makeHttpRequest())
     expect(httpResponse).toEqual(serverError(new Error('any_error')))
   })
 })
