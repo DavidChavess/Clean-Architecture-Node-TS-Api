@@ -1,5 +1,10 @@
 import { SurveyResultModel } from '@/domain/models/survey-result-model'
 
+export type LoadSurveyResultParams = {
+  surveyId: string
+  accountId: string
+}
+
 export interface LoadSurveyResult {
-  load: (surveyId: string) => Promise<SurveyResultModel>
+  load: (params: LoadSurveyResultParams) => Promise<SurveyResultModel>
 }

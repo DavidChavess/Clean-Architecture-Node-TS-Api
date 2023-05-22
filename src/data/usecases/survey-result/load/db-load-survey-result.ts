@@ -1,4 +1,4 @@
-import { LoadSurveyByIdRepository, LoadSurveyResult, LoadSurveyResultRepository, SurveyResultModel } from './db-load-survey-result-protocols'
+import { LoadSurveyByIdRepository, LoadSurveyResult, LoadSurveyResultRepository, SurveyResultModel, LoadSurveyResultParams } from './db-load-survey-result-protocols'
 
 export class DbLoadSurveyResult implements LoadSurveyResult {
   constructor (
@@ -6,15 +6,18 @@ export class DbLoadSurveyResult implements LoadSurveyResult {
     private readonly loadSurveyByIdRepository: LoadSurveyByIdRepository
   ) {}
 
-  async load (surveyId: string): Promise<SurveyResultModel> {
-    const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(surveyId)
+  async load (params: LoadSurveyResultParams): Promise<SurveyResultModel> {
+    const surveyResult = await this.loadSurveyResultRepository.loadBySurveyId(params)
     if (surveyResult) {
       return surveyResult
     }
+    const { surveyId } = params
     const survey = await this.loadSurveyByIdRepository.loadById(surveyId)
     return {
       surveyId,
-      answers: survey.answers.map(answer => ({ answer: answer.answer, image: answer.image, count: 0, percent: 0 })),
+      answers: survey.answers.map(answer => Object.assign({}, answer, {
+        count: 0, percent: 0, isCurrentAccountAnswer: false
+      })),
       question: survey.question,
       date: survey.date
     }

@@ -2,7 +2,7 @@ import { SaveSurveyResultRepository, LoadSurveyResultRepository } from './db-sav
 import { DbSaveSurveyResult } from './db-save-survey-result'
 import MockDate from 'mockdate'
 import { mockLoadSurveyResultRepository, mockSaveSurveyResultRepository } from '@/data/test'
-import { mockSaveSurveyResultParams, mockSurveyResultModel } from '@/domain/test'
+import { mockLoadSurveyResultParams, mockSaveSurveyResultParams, mockSurveyResultModel } from '@/domain/test'
 
 describe('DbSaveSurveyResult Usecase', () => {
   let _sut: DbSaveSurveyResult
@@ -38,7 +38,7 @@ describe('DbSaveSurveyResult Usecase', () => {
   test('Should call LoadSurveyResultRepository with correct values', async () => {
     const loadSurveyResultRepoSpy = jest.spyOn(_loadSurveyResultRepositoryStub, 'loadBySurveyId')
     await _sut.save(mockSaveSurveyResultParams())
-    expect(loadSurveyResultRepoSpy).toHaveBeenCalledWith('any_survey_id')
+    expect(loadSurveyResultRepoSpy).toHaveBeenCalledWith(mockLoadSurveyResultParams())
   })
 
   test('Should throws id LoadSurveyResultRepository throws', async () => {

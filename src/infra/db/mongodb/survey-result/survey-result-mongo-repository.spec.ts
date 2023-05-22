@@ -2,7 +2,7 @@ import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper } from '@/infra/db/mongodb/helpers/mongo-helper'
 import { SurveyResultMongoRepository } from './survey-result-mongo-repository'
 import MockDate from 'mockdate'
-import { mockAddAccountParams, mockAddSurveyParams } from '@/domain/test'
+import { SurveyResultListBuilder, mockAddAccountParams, mockAddSurveyParams } from '@/domain/test'
 
 describe('Survey Result Mongo Repository', () => {
   let surveyCollection: Collection
@@ -91,43 +91,77 @@ describe('Survey Result Mongo Repository', () => {
   describe('loadBySurveyId()', () => {
     test('Should load survey result', async () => {
       const account = await makeAccount()
+      const account2 = await makeAccount()
       const survey = await makeSurvey()
-      await surveyResultsCollection.insertMany([
-        {
-          accountId: account._id,
-          surveyId: survey._id,
-          answer: survey.answers[0].answer,
-          date: new Date()
-        },
-        {
-          accountId: account._id,
-          surveyId: survey._id,
-          answer: survey.answers[0].answer,
-          date: new Date()
-        },
-        {
-          accountId: account._id,
-          surveyId: survey._id,
-          answer: survey.answers[1].answer,
-          date: new Date()
-        },
-        {
-          accountId: account._id,
-          surveyId: survey._id,
-          answer: survey.answers[1].answer,
-          date: new Date()
-        }
-      ])
+      const surveyResults = new SurveyResultListBuilder()
+        .aSeller().withAccountId(account._id).withSurveyId(survey._id).withAnswer(survey.answers[0].answer)
+        .aSeller().withAccountId(account2._id).withSurveyId(survey._id).withAnswer(survey.answers[0].answer)
+        .build()
+      await surveyResultsCollection.insertMany(surveyResults)
       const sut = makeSut()
-      const surveyResult = await sut.loadBySurveyId(survey._id)
+      const surveyResult = await sut.loadBySurveyId({ surveyId: survey._id, accountId: account._id })
       expect(surveyResult).toBeTruthy()
       expect(surveyResult.surveyId).toEqual(survey._id)
       expect(surveyResult.answers[0].count).toBe(2)
-      expect(surveyResult.answers[0].percent).toBe(50)
-      expect(surveyResult.answers[1].count).toBe(2)
-      expect(surveyResult.answers[1].percent).toBe(50)
+      expect(surveyResult.answers[0].percent).toBe(100)
+      expect(surveyResult.answers[0].isCurrentAccountAnswer).toBe(true)
+      expect(surveyResult.answers[1].count).toBe(0)
+      expect(surveyResult.answers[1].percent).toBe(0)
+      expect(surveyResult.answers[1].isCurrentAccountAnswer).toBe(false)
       expect(surveyResult.answers[2].count).toBe(0)
       expect(surveyResult.answers[2].percent).toBe(0)
+      expect(surveyResult.answers[2].isCurrentAccountAnswer).toBe(false)
+    })
+
+    test('Should load survey result 2', async () => {
+      const account = await makeAccount()
+      const account2 = await makeAccount()
+      const account3 = await makeAccount()
+      const survey = await makeSurvey()
+      const surveyResults = new SurveyResultListBuilder()
+        .aSeller().withAccountId(account._id).withSurveyId(survey._id).withAnswer(survey.answers[0].answer)
+        .aSeller().withAccountId(account2._id).withSurveyId(survey._id).withAnswer(survey.answers[1].answer)
+        .aSeller().withAccountId(account3._id).withSurveyId(survey._id).withAnswer(survey.answers[1].answer)
+        .build()
+      await surveyResultsCollection.insertMany(surveyResults)
+      const sut = makeSut()
+      const surveyResult = await sut.loadBySurveyId({ surveyId: survey._id, accountId: account2._id })
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult.surveyId).toEqual(survey._id)
+      expect(surveyResult.answers[0].count).toBe(2)
+      expect(surveyResult.answers[0].percent).toBe(67)
+      expect(surveyResult.answers[0].isCurrentAccountAnswer).toBe(true)
+      expect(surveyResult.answers[1].count).toBe(1)
+      expect(surveyResult.answers[1].percent).toBe(33)
+      expect(surveyResult.answers[1].isCurrentAccountAnswer).toBe(false)
+      expect(surveyResult.answers[2].count).toBe(0)
+      expect(surveyResult.answers[2].percent).toBe(0)
+      expect(surveyResult.answers[2].isCurrentAccountAnswer).toBe(false)
+    })
+
+    test('Should load survey result 3', async () => {
+      const account = await makeAccount()
+      const account2 = await makeAccount()
+      const account3 = await makeAccount()
+      const survey = await makeSurvey()
+      const surveyResults = new SurveyResultListBuilder()
+        .aSeller().withAccountId(account._id).withSurveyId(survey._id).withAnswer(survey.answers[0].answer)
+        .aSeller().withAccountId(account2._id).withSurveyId(survey._id).withAnswer(survey.answers[1].answer)
+        .build()
+      await surveyResultsCollection.insertMany(surveyResults)
+      const sut = makeSut()
+      const surveyResult = await sut.loadBySurveyId({ surveyId: survey._id, accountId: account3._id })
+      expect(surveyResult).toBeTruthy()
+      expect(surveyResult.surveyId).toEqual(survey._id)
+      expect(surveyResult.answers[0].count).toBe(1)
+      expect(surveyResult.answers[0].percent).toBe(50)
+      expect(surveyResult.answers[0].isCurrentAccountAnswer).toBe(false)
+      expect(surveyResult.answers[1].count).toBe(1)
+      expect(surveyResult.answers[1].percent).toBe(50)
+      expect(surveyResult.answers[1].isCurrentAccountAnswer).toBe(false)
+      expect(surveyResult.answers[2].count).toBe(0)
+      expect(surveyResult.answers[2].percent).toBe(0)
+      expect(surveyResult.answers[2].isCurrentAccountAnswer).toBe(false)
     })
   })
 })

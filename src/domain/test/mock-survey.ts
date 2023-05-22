@@ -21,7 +21,7 @@ export const mockAddSurveyParams = (): AddSurveyParams => ({
 })
 
 export const mockSurveyModel = (): SurveyModel => ({
-  id: '1',
+  id: 'any_survey_id',
   question: 'any_question',
   date: new Date(),
   answers: [{ answer: 'any_answer', image: 'any_image' }]

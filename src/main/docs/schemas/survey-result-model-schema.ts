@@ -8,13 +8,26 @@ export const surveyResultModelSchema = {
       items: {
         type: 'object',
         properties: {
-          answer: { type: 'string' },
-          image: { type: 'string' },
-          count: { type: 'number' },
-          percent: { type: 'number' }
-        }
+          answer: {
+            type: 'string'
+          },
+          image: {
+            type: 'string'
+          },
+          count: {
+            type: 'number'
+          },
+          percent: {
+            type: 'number'
+          },
+          isCurrentAccountAnswer: {
+            type: 'boolean'
+          }
+        },
+        required: ['answer', 'count', 'percent', 'isCurrentAccountAnswer']
       }
     },
     date: { type: 'string' }
-  }
+  },
+  required: ['surveyId', 'question', 'answers', 'date']
 }
