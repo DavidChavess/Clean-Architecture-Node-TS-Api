@@ -1,10 +1,8 @@
 import { Router } from 'express'
-import { adaptRoute } from '../adapters/express-route-adapter'
-import { makeLogControllerDecorator } from '../factories/decorators/log-controller-decorator-factory'
-import { makeAddSurveyController } from '../factories/controllers/survey/add/add-survey-controller-factory'
-import { makeLoadSurveysController } from '../factories/controllers/survey/load/load-surveys-controller-factory'
-import { authAdmin } from '../middlewares/auth-admin'
-import { auth } from '../middlewares/auth'
+import { adaptRoute } from '@/main/adapters'
+import { makeLogControllerDecorator } from '@/main/factories/decorators'
+import { makeAddSurveyController, makeLoadSurveysController } from '@/main/factories/controllers'
+import { auth, authAdmin } from '@/main/middlewares'
 
 export default (router: Router): void => {
   router.post('/surveys', authAdmin, adaptRoute(makeLogControllerDecorator(makeAddSurveyController())))
