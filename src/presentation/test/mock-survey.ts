@@ -1,7 +1,7 @@
 import { SurveyModel } from '@/domain/models/survey-model'
-import { AddSurvey, AddSurveyParams } from '@/domain/usecases/survey/add-survey'
-import { LoadSurveyById } from '@/domain/usecases/survey/load-survey-by-id'
-import { LoadSurveys } from '@/domain/usecases/survey/load-surveys'
+import { AddSurvey, AddSurveyParams } from '@/domain/usecases/add-survey'
+import { LoadSurveyById } from '@/domain/usecases/load-survey-by-id'
+import { LoadSurveys } from '@/domain/usecases/load-surveys'
 import { mockSurveyModel, mockSurveyModels } from '@/domain/test'
 
 export const mockAddSurvey = (): AddSurvey => {

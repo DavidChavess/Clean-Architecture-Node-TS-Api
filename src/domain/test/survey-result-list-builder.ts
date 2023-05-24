@@ -1,4 +1,4 @@
-import { SaveSurveyResultParams } from '@/domain/usecases/survey-result/save-survey-result'
+import { SaveSurveyResultParams } from '@/domain/usecases/save-survey-result'
 
 export class SurveyResultListBuilder {
   private index: number = -1

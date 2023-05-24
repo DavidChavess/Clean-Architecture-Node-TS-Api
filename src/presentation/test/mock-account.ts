@@ -1,8 +1,8 @@
 import { AccountModel } from '@/domain/models/account-model'
 import { AuthenticationModel } from '@/domain/models/authentication-model'
-import { AddAccount, AddAccountParams } from '@/domain/usecases/account/add-account'
-import { LoadAccountByToken } from '@/domain/usecases/account/load-account-by-token'
-import { Authentication, AuthenticationParams } from '@/domain/usecases/authentication/authentication'
+import { AddAccount, AddAccountParams } from '@/domain/usecases/add-account'
+import { LoadAccountByToken } from '@/domain/usecases/load-account-by-token'
+import { Authentication, AuthenticationParams } from '@/domain/usecases/authentication'
 import { mockAccountModel } from '@/domain/test'
 
 export const mockAddAccount = (): AddAccount => {

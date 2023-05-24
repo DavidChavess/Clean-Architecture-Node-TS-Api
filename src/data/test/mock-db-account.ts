@@ -1,4 +1,4 @@
-import { AddAccountParams } from '@/domain/usecases/account/add-account'
+import { AddAccountParams } from '@/domain/usecases/add-account'
 import { AccountModel } from '@/domain/models/account-model'
 import { mockAccountModel } from '@/domain/test'
 import { AddAccountRepository } from '@/data/protocols/db/account/add-account-repository'

@@ -1,5 +1,5 @@
 import { AccountModel } from '@/domain/models/account-model'
-import { AddAccountParams } from '@/domain/usecases/account/add-account'
+import { AddAccountParams } from '@/domain/usecases/add-account'
 
 export const mockAccountModel = (): AccountModel => ({
   id: 'any_id',
