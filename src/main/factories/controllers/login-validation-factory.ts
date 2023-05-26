@@ -1,6 +1,6 @@
 import { RequiredFieldValidation, EmailValidation, ValidationComposite } from '@/validation/validators'
-import { Validation } from '@/presentation/protocols/validation'
-import { EmailValidatorAdapter } from '@/infra/validators/email-validator-adapter'
+import { Validation } from '@/presentation/protocols'
+import { EmailValidatorAdapter } from '@/infra/validators'
 
 export const makeLoginValidation = (): Validation => {
   const validations: Validation[] = ['email', 'password'].map(field => new RequiredFieldValidation(field))
