@@ -1,13 +1,13 @@
 import { LoadSurveys } from '@/domain/usecases'
-import { Controller, HttpRequest, HttpResponse } from '@/presentation/protocols'
+import { Controller, HttpResponse } from '@/presentation/protocols'
 import { unauthorized, noContent, ok, serverError } from '@/presentation/helpers'
 
 export class LoadSurveysController implements Controller {
   constructor (private readonly loadSurveys: LoadSurveys) {}
 
-  async handle (httpRequest: HttpRequest): Promise<HttpResponse> {
+  async handle (request: LoadSurveysController.Request): Promise<HttpResponse> {
     try {
-      const { accountId } = httpRequest
+      const { accountId } = request
       if (!accountId) return unauthorized()
 
       const surveys = await this.loadSurveys.load(accountId)
@@ -15,5 +15,11 @@ export class LoadSurveysController implements Controller {
     } catch (error) {
       return serverError(error)
     }
+  }
+}
+
+export namespace LoadSurveysController {
+  export type Request = {
+    accountId: string
   }
 }
