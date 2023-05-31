@@ -1,7 +1,7 @@
-import { AddSurveyParams } from '@/domain/usecases/add-survey'
-import { SurveyModel } from '../models/survey-model'
+import { SurveyModel } from '@/domain/models/survey-model'
+import { AddSurvey } from '@/domain/usecases/add-survey'
 
-export const mockAddSurveyParams = (): AddSurveyParams => ({
+export const mockAddSurveyParams = (): AddSurvey.Params => ({
   question: 'any_question',
   answers: [
     {
