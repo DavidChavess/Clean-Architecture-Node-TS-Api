@@ -11,7 +11,7 @@ export class AuthMiddleware implements Middleware {
 
   async handle (request: AuthMiddleware.Request): Promise<HttpResponse> {
     try {
-      const accessToken = request.accessToken
+      const { accessToken } = request
       if (!accessToken) {
         return forbidden(new AccessDeniedError())
       }
