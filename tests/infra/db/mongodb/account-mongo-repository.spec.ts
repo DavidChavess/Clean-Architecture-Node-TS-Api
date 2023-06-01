@@ -1,15 +1,10 @@
 import { Collection } from 'mongodb'
 import { AccountMongoRepository, MongoHelper } from '@/infra/db'
+import { mockAddAccount } from '@/tests/infra/mocks'
 
 describe('Account Mongo Repository', () => {
   let accountCollection: Collection
   let sut: AccountMongoRepository
-
-  const mockAddAccount = (): any => ({
-    name: 'any_name',
-    email: 'any_email@mail.com',
-    password: 'any_password'
-  })
 
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
@@ -39,10 +34,9 @@ describe('Account Mongo Repository', () => {
       await accountCollection.insertOne(mockAddAccount())
       const response = await sut.loadByEmail('any_email@mail.com')
       expect(response).toBeTruthy()
-      expect(response?.id).toBeTruthy()
-      expect(response?.name).toBe('any_name')
-      expect(response?.email).toBe('any_email@mail.com')
-      expect(response?.password).toBe('any_password')
+      expect(response.id).toBeTruthy()
+      expect(response.name).toBe('any_name')
+      expect(response.password).toBe('any_password')
     })
 
     test('Should return null if loadByEmail fails', async () => {
