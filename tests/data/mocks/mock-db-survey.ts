@@ -22,11 +22,12 @@ export const mockLoadSurveyByIdRepository = (): LoadSurveyByIdRepository => {
   return new LoadSurveyByIdRepositoryStub()
 }
 
-export const mockLoadSurveysRepository = (): LoadSurveysRepository => {
-  class LoadSurveysRepositoryStub implements LoadSurveysRepository {
-    async loadAll (accountId: string): Promise<SurveyModel[]> {
-      return mockSurveyModels()
-    }
+export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
+  accountId: string
+  result: SurveyModel[] = mockSurveyModels()
+
+  async loadAll (accountId: string): Promise<SurveyModel[]> {
+    this.accountId = accountId
+    return this.result
   }
-  return new LoadSurveysRepositoryStub()
 }

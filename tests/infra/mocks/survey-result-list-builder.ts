@@ -1,15 +1,10 @@
-import { SaveSurveyResultParams } from '@/domain/usecases/save-survey-result'
-
 export class SurveyResultListBuilder {
   private index: number = -1
-  private readonly surveys: SaveSurveyResultParams[] = []
+  private readonly surveys: any[] = []
 
   aSeller (): SurveyResultListBuilder {
     this.index++
     this.surveys.push({
-      surveyId: '',
-      accountId: '',
-      answer: '',
       date: new Date()
     })
     return this
@@ -30,7 +25,7 @@ export class SurveyResultListBuilder {
     return this
   }
 
-  build (): SaveSurveyResultParams[] {
+  build (): any[] {
     return this.surveys
   }
 }

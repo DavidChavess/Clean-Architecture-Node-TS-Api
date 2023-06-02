@@ -1,7 +1,8 @@
-import MockDate from 'mockdate'
-import { Collection, ObjectId } from 'mongodb'
 import { MongoHelper, SurveyResultMongoRepository } from '@/infra/db'
-import { SurveyResultListBuilder, mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain/mocks'
+import { mockAddAccountParams, mockAddSurveyParams } from '@/tests/domain/mocks'
+import { SurveyResultListBuilder } from '@/tests/infra/mocks'
+import { Collection, ObjectId } from 'mongodb'
+import MockDate from 'mockdate'
 
 describe('Survey Result Mongo Repository', () => {
   let surveyCollection: Collection
