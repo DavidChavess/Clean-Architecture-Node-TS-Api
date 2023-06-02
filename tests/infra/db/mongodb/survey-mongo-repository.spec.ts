@@ -92,4 +92,18 @@ describe('Survey Mongo Repository', () => {
       expect(survey.question).toBe('any_question')
     })
   })
+
+  describe('checkById()', () => {
+    test('Should return true if id is valid', async () => {
+      const survey = mockAddSurvey()
+      const surveyResult = await surveyCollection.insertOne(survey)
+      const response = await makeSut().checkById(surveyResult.insertedId.toString())
+      expect(response).toBe(true)
+    })
+
+    test('Should return false if id is not valid', async () => {
+      const response = await makeSut().checkById('643ee19a8b7d94780eef6ce2')
+      expect(response).toBe(false)
+    })
+  })
 })

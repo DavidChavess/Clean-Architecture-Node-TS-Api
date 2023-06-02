@@ -1,7 +1,7 @@
 
 import { LoadSurveyResultController } from '@/presentation/controllers'
-import { makeDbLoadSurveyById, makeDbLoadSurveyResult } from '@/main/factories/usecases'
+import { makeDbCheckSurveyById, makeDbLoadSurveyResult } from '@/main/factories/usecases'
 
 export const makeLoadSurveyResultController = (): LoadSurveyResultController => {
-  return new LoadSurveyResultController(makeDbLoadSurveyById(), makeDbLoadSurveyResult())
+  return new LoadSurveyResultController(makeDbCheckSurveyById(), makeDbLoadSurveyResult())
 }

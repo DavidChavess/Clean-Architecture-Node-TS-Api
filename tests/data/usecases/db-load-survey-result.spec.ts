@@ -1,12 +1,11 @@
 import { DbLoadSurveyResult } from '@/data/usecases'
-import { LoadSurveyByIdRepository } from '@/data/protocols'
 import { mockLoadSurveyResultParams, mockSurveyResultModel } from '@/tests/domain/mocks'
-import { LoadSurveyResultRepositorySpy, mockLoadSurveyByIdRepository } from '@/tests/data/mocks'
+import { LoadSurveyResultRepositorySpy, LoadSurveyByIdRepositorySpy } from '@/tests/data/mocks'
 import MockDate from 'mockdate'
 
 describe('DbLoadSurveyResult Usecase', () => {
   let _loadSurveyResultRepositorySpy: LoadSurveyResultRepositorySpy
-  let _loadSurveyByIdRepositoryStub: LoadSurveyByIdRepository
+  let _loadSurveyByIdRepositorySpy: LoadSurveyByIdRepositorySpy
   let _sut: DbLoadSurveyResult
 
   beforeAll(async () => {
@@ -18,8 +17,8 @@ describe('DbLoadSurveyResult Usecase', () => {
   })
   beforeEach(() => {
     _loadSurveyResultRepositorySpy = new LoadSurveyResultRepositorySpy()
-    _loadSurveyByIdRepositoryStub = mockLoadSurveyByIdRepository()
-    _sut = new DbLoadSurveyResult(_loadSurveyResultRepositorySpy, _loadSurveyByIdRepositoryStub)
+    _loadSurveyByIdRepositorySpy = new LoadSurveyByIdRepositorySpy()
+    _sut = new DbLoadSurveyResult(_loadSurveyResultRepositorySpy, _loadSurveyByIdRepositorySpy)
   })
 
   test('Should call LoadSurveyResultRepository with correct survey id', async () => {
@@ -37,9 +36,9 @@ describe('DbLoadSurveyResult Usecase', () => {
 
   test('Should call LoadSurveyByIdRepository if LoadSurveyResultRepository returns null', async () => {
     _loadSurveyResultRepositorySpy.result = null
-    const loadSurveyByIdSpy = jest.spyOn(_loadSurveyByIdRepositoryStub, 'loadById')
-    await _sut.load(mockLoadSurveyResultParams())
-    expect(loadSurveyByIdSpy).toHaveBeenCalledWith('any_survey_id')
+    const loadSurveyResultParams = mockLoadSurveyResultParams()
+    await _sut.load(loadSurveyResultParams)
+    expect(_loadSurveyByIdRepositorySpy.id).toBe(loadSurveyResultParams.surveyId)
   })
 
   test('Should return survey result with all answers with count 0 if LoadSurveyResultRepository returns null', async () => {
