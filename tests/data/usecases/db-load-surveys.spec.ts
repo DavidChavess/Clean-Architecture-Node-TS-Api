@@ -1,7 +1,7 @@
 import { DbLoadSurveys } from '@/data/usecases'
-import MockDate from 'mockdate'
 import { mockSurveyModels } from '@/tests/domain/mocks'
 import { LoadSurveysRepositorySpy } from '@/tests/data/mocks'
+import MockDate from 'mockdate'
 
 describe('DbLoadSurveys Usecase', () => {
   let _sut: DbLoadSurveys
