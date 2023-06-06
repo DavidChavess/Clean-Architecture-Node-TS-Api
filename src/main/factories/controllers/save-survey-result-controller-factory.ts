@@ -1,6 +1,6 @@
 import { SaveSurveyResultController } from '@/presentation/controllers'
-import { makeDbSaveSurveyResult, makeDbLoadSurveyById } from '@/main/factories/usecases'
+import { makeDbSaveSurveyResult, makeDbLoadAnswersBySurvey } from '@/main/factories/usecases'
 
 export const makeSaveSurveyResultController = (): SaveSurveyResultController => {
-  return new SaveSurveyResultController(makeDbLoadSurveyById(), makeDbSaveSurveyResult())
+  return new SaveSurveyResultController(makeDbLoadAnswersBySurvey(), makeDbSaveSurveyResult())
 }

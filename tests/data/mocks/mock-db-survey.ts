@@ -1,5 +1,5 @@
 import { SurveyModel } from '@/domain/models/survey-model'
-import { LoadSurveyByIdRepository, AddSurveyRepository, LoadSurveysRepository, CheckSurveyByIdRepository } from '@/data/protocols/db'
+import { LoadSurveyByIdRepository, AddSurveyRepository, LoadSurveysRepository, CheckSurveyByIdRepository, LoadAnswersBySurveyIdRepository } from '@/data/protocols/db'
 import { mockSurveyModel, mockSurveyModels } from '@/tests/domain/mocks'
 
 export const mockAddSurveyRepository = (): AddSurveyRepository => {
@@ -37,6 +37,16 @@ export class LoadSurveysRepositorySpy implements LoadSurveysRepository {
 
   async loadAll (accountId: string): Promise<SurveyModel[]> {
     this.accountId = accountId
+    return this.result
+  }
+}
+
+export class LoadAnswersBySurveyIdRepositorySpy implements LoadAnswersBySurveyIdRepository {
+  surveyId: string
+  result: LoadAnswersBySurveyIdRepository.Result = ['answer_1', 'answer_2', 'answer_3']
+
+  async loadAnswersBySurveyId (id: string): Promise<LoadAnswersBySurveyIdRepository.Result> {
+    this.surveyId = id
     return this.result
   }
 }

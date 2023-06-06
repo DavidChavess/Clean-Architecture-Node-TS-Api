@@ -106,4 +106,19 @@ describe('Survey Mongo Repository', () => {
       expect(response).toBe(false)
     })
   })
+
+  describe('loadAnswersBySurveyId()', () => {
+    test('Should return answers if surveyId is valid', async () => {
+      const survey = mockAddSurvey()
+      const surveyResult = await surveyCollection.insertOne(survey)
+      const response = await makeSut().loadAnswersBySurveyId(surveyResult.insertedId.toString())
+      expect(response).toBeTruthy()
+      expect(response.length).toBe(survey.answers.length)
+    })
+
+    test('Should return empty if surveyId is invalid', async () => {
+      const response = await makeSut().loadAnswersBySurveyId('643ee19a8b7d94780eef6ce2')
+      expect(response.length).toBe(0)
+    })
+  })
 })
