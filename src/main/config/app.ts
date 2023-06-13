@@ -6,7 +6,7 @@ import setupStaticFiles from './static-files'
 import setupApolloServer from './apollo-server'
 
 const app = express()
-setupApolloServer(app)
+void setupApolloServer(app)
 setupStaticFiles(app)
 setupSwagger(app)
 setupMiddlewares(app)
