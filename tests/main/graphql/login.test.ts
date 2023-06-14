@@ -32,7 +32,7 @@ describe('Auth GraphQL', () => {
     await accountCollection.deleteMany({})
   })
 
-  describe('POST /login', () => {
+  describe('Login Query', () => {
     test('Should return an account on valid credentials is provided', async () => {
       const account = mockAccount()
       const password = await bcrypt.hash(account.password, 12)
@@ -55,6 +55,25 @@ describe('Auth GraphQL', () => {
       expect(status).toBe(401)
       expect(body.data).toBeFalsy()
       expect(body.errors[0].message).toBe('Unauthorized')
+    })
+  })
+
+  describe('SignUp Mutation', () => {
+    const query = `mutation {
+      signUp (name: "any_name", email: "any_email@gmail.com", password: "any_password", passwordConfirmation: "any_password") {
+        accessToken
+        name
+      }
+    }
+    `
+    test('Should create an account on valid data', async () => {
+      const { status, body: { data: { signUp } } } = await request(app)
+        .post('/graphql')
+        .send({ query })
+
+      expect(status).toBe(200)
+      expect(signUp.name).toBe('any_name')
+      expect(signUp.accessToken).toBeTruthy()
     })
   })
 })
