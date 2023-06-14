@@ -3,12 +3,7 @@ import { MongoHelper } from '@/infra/db'
 import { Collection } from 'mongodb'
 import bcrypt from 'bcrypt'
 import request from 'supertest'
-
-const mockAccount = (): any => ({
-  name: 'any_name',
-  email: 'any_email@gmail.com',
-  password: 'any_password'
-})
+import { mockAccount } from '@/tests/main/graphql/mocks'
 
 describe('Auth GraphQL', () => {
   let accountCollection: Collection
