@@ -1,20 +1,8 @@
 import app from '@/main/config/app'
-import env from '@/main/config/env'
 import request from 'supertest'
-import { sign } from 'jsonwebtoken'
 import { MongoHelper } from '@/infra/db'
 import { Collection } from 'mongodb'
-import { mockAccount, mockSurveyParams } from '@/tests/main/graphql/mocks'
-
-const mockAccessToken = async (accountCollection: Collection): Promise<string> => {
-  const account = mockAccount()
-  await accountCollection.insertOne(account)
-
-  const id = account._id
-  const accessToken = sign({ id }, env.jwtSecret)
-  await accountCollection.updateOne({ _id: id }, { $set: { accessToken } })
-  return accessToken
-}
+import { mockSurveyParams, mockAccessToken } from '@/tests/main/graphql/mocks'
 
 describe('Survey GraphQL', () => {
   let surveyCollection: Collection
