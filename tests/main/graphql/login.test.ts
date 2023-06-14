@@ -12,13 +12,7 @@ const mockAccount = (): any => ({
 
 describe('Auth GraphQL', () => {
   let accountCollection: Collection
-  const query = `query {
-    login (email: "any_email@gmail.com", password: "any_password") {
-      accessToken
-      name
-    }
-  }
-  `
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
   })
@@ -33,6 +27,12 @@ describe('Auth GraphQL', () => {
   })
 
   describe('Login Query', () => {
+    const query = `query {
+      login (email: "any_email@gmail.com", password: "any_password") {
+        accessToken
+        name
+      }
+    }`
     test('Should return an account on valid credentials is provided', async () => {
       const account = mockAccount()
       const password = await bcrypt.hash(account.password, 12)
@@ -74,6 +74,20 @@ describe('Auth GraphQL', () => {
       expect(status).toBe(200)
       expect(signUp.name).toBe('any_name')
       expect(signUp.accessToken).toBeTruthy()
+    })
+
+    test('Should return EmailInUseError on invalid data', async () => {
+      const account = mockAccount()
+      const password = await bcrypt.hash(account.password, 12)
+      await accountCollection.insertOne({ ...account, password })
+
+      const { status, body } = await request(app)
+        .post('/graphql')
+        .send({ query })
+
+      expect(status).toBe(403)
+      expect(body.data).toBeFalsy()
+      expect(body.errors[0].message).toBe('The received email is already is use')
     })
   })
 })
