@@ -7,7 +7,7 @@ export const mockSurveyParams = (): any => ({
     },
     {
       image: 'https://any_image-1.com',
-      answer: 'any_answer'
+      answer: 'any_answer_2'
     }
   ],
   date: new Date()
