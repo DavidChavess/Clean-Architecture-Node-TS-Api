@@ -22,6 +22,20 @@ describe('SurveyResult GraphQL', () => {
   }
   `
 
+  const mutation = (surveyId?: string, answer?: string): string => `mutation {
+    saveSurveyResult (surveyId: "${surveyId}", answer: "${answer}") {
+      question
+      answers {
+        answer
+        count
+        percent
+        isCurrentAccountAnswer
+      }
+      date
+    }
+  }
+  `
+
   beforeAll(async () => {
     await MongoHelper.connect(process.env.MONGO_URL as string)
   })
@@ -75,6 +89,15 @@ describe('SurveyResult GraphQL', () => {
         }
       ])
       expect(status).toBe(200)
+    })
+  })
+
+  describe('saveSurveyResult Mutation', () => {
+    test('Should return 403 on saveSurveyResult without accessToken', async () => {
+      await request(app)
+        .post('/graphql')
+        .send({ query: mutation() })
+        .expect(403)
     })
   })
 })
