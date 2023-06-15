@@ -99,5 +99,34 @@ describe('SurveyResult GraphQL', () => {
         .send({ query: mutation() })
         .expect(403)
     })
+
+    test('Should return 200 on save surveyResult with valid accessToken', async () => {
+      const date = new Date()
+      const survey = { ...mockSurveyParams(), date }
+      await surveyCollection.insertOne(survey)
+
+      const { status, body: { data: { saveSurveyResult } } } = await request(app)
+        .post('/graphql')
+        .set('x-access-token', await mockAccessToken(accountCollection))
+        .send({ query: mutation(survey._id, survey.answers[0].answer) })
+
+      expect(saveSurveyResult.question).toBe(survey.question)
+      expect(saveSurveyResult.date).toBe(date.toISOString())
+      expect(saveSurveyResult.answers).toEqual([
+        {
+          answer: 'any_answer',
+          count: 1,
+          percent: 100,
+          isCurrentAccountAnswer: true
+        },
+        {
+          answer: 'any_answer_2',
+          count: 0,
+          percent: 0,
+          isCurrentAccountAnswer: false
+        }
+      ])
+      expect(status).toBe(200)
+    })
   })
 })
